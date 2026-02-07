@@ -1,8 +1,7 @@
 import { useRef, useMemo } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
 import type { Group, Mesh } from 'three'
-import type { BodyRegionId } from '../../types'
-import { BODY_REGIONS } from '../../types'
+import { BODY_REGIONS, type BodyRegionId } from './bodyRegions'
 
 /**
  * Placeholder body: simple grouped meshes for each region (PR-01).
