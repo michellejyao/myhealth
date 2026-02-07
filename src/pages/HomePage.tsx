@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BodyViewer } from '../features/body-viewer/BodyViewer'
 import { useAppStore } from '../store'
+import { BODY_REGION_LABELS } from '../types'
 
 /**
  * PR-01: Body view; selecting a region opens New Log flow.
@@ -20,7 +21,10 @@ export function HomePage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-slate-800 mb-4">Body Viewer</h1>
+      <h1 className="text-xl font-semibold text-slate-800 mb-2">Body</h1>
+      <p className="text-slate-600 mb-4">
+        Click a body region to log a symptom. Selected region opens the New Log form.
+      </p>
       <BodyViewer />
     </div>
   )
