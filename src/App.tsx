@@ -1,13 +1,26 @@
 import { Routes, Route } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 import { Layout } from './components/Layout'
+import { LoginPage } from './pages/LoginPage'
 import { HomePage } from './pages/HomePage'
 import { LogsPage } from './pages/LogsPage'
 import { LogDetailPage } from './pages/LogDetailPage'
 import { NewLogPage } from './pages/NewLogPage'
 import { TimelinePage } from './pages/TimelinePage'
 import { ProfilePage } from './pages/ProfilePage'
+import { LoadingSpinner } from './components/LoadingSpinner'
 
 function App() {
+  const { isAuthenticated, isLoading } = useAuth0()
+
+  if (isLoading) {
+    return <LoadingSpinner />
+  }
+
+  if (!isAuthenticated) {
+    return <LoginPage />
+  }
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>

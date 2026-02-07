@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.13.0",
     "@react-three/drei": "^9.92.7",
     "@react-three/fiber": "^8.15.12",
+    "@supabase/supabase-js": "^2.95.3",
     "dexie": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,4 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const nav = [
   { to: '/', label: 'Body' },
@@ -9,6 +10,7 @@ const nav = [
 
 export function Layout() {
   const location = useLocation()
+  const { user, logout } = useAuth0()
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -17,7 +19,7 @@ export function Layout() {
           <Link to="/" className="font-semibold text-slate-800">
             MyHealth
           </Link>
-          <nav className="flex gap-4">
+          <nav className="flex gap-4 items-center">
             {nav.map(({ to, label }) => (
               <Link
                 key={to}
@@ -31,6 +33,20 @@ export function Layout() {
                 {label}
               </Link>
             ))}
+            {user && (
+              <div className="flex items-center gap-3 ml-4 pl-4 border-l border-slate-200">
+                <div className="text-right">
+                  <p className="text-sm font-medium text-slate-800">{user.name}</p>
+                  <p className="text-xs text-slate-500">{user.email}</p>
+                </div>
+                <button
+                  onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                  className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </nav>
         </div>
       </header>

@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { BodyModel } from './BodyModel'
+import { BioDigitalViewer } from './BioDigitalViewer'
 import { useAppStore } from '../../store'
 
 /**
@@ -10,6 +12,8 @@ import { useAppStore } from '../../store'
 export function BodyViewer() {
   const selectedBodyRegion = useAppStore((s) => s.selectedBodyRegion)
   const setSelectedBodyRegion = useAppStore((s) => s.setSelectedBodyRegion)
+  const [viewerMode, setViewerMode] = useState<ViewerMode>('biodigital')
+  const [selectedAnatomy, setSelectedAnatomy] = useState<string | null>(null)
 
   return (
     <div className="h-[480px] rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
