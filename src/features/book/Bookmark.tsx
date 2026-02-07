@@ -19,6 +19,8 @@ export const Bookmark3D = ({
   height,
   onClick,
 }: Bookmark3DProps) => {
+  void _notchDepth
+  void _shadowColor
   const bookmarkHeight = height || 0.32 * scale;
 
   const ref = useRef<THREE.Group>(null);

@@ -90,4 +90,13 @@ export const analysisService = {
     if (error) throw new Error(`Failed to fetch summaries: ${error.message}`)
     return data ?? []
   },
+
+  /** Fetch AI flags and summaries for book insights page. */
+  async fetchAIInsights(userId: string): Promise<{ flags: AIFlag[]; summaries: AISummary[] }> {
+    const [flags, summaries] = await Promise.all([
+      this.getFlags(userId, 20),
+      this.getSummaries(userId, 10),
+    ])
+    return { flags, summaries }
+  },
 }
