@@ -53,9 +53,9 @@ export function NewLogPage() {
   }
 
   return (
-    <div className="max-w-lg">
-      <Link to="/" className="text-indigo-600 hover:underline mb-4 inline-block">
-        ← Back to body
+    <div>
+      <Link to="/logs" className="text-indigo-600 hover:underline mb-4 inline-block">
+        ← Back to logs
       </Link>
       <h1 className="text-xl font-semibold text-slate-800 mb-6">New Symptom Log</h1>
 

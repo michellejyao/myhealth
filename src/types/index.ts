@@ -1,17 +1,31 @@
 /**
- * Re-export body region types from the body-viewer feature (single source of truth).
+ * Fixed set of body regions for logging (PR-01, PR-02).
  */
-export {
-  BODY_REGIONS,
-  BODY_REGION_LABELS,
-  BODY_REGION_LIST,
-  getBodyRegionLabel,
-  isBodyRegionId,
-  type BodyRegionId,
-  type BodyRegionDef,
-} from '../features/body-viewer/bodyRegions'
+export const BODY_REGIONS = [
+  'head',
+  'neck',
+  'chest',
+  'abdomen',
+  'back',
+  'left_arm',
+  'right_arm',
+  'left_leg',
+  'right_leg',
+] as const
 
-import type { BodyRegionId } from '../features/body-viewer/bodyRegions'
+export type BodyRegionId = (typeof BODY_REGIONS)[number]
+
+export const BODY_REGION_LABELS: Record<BodyRegionId, string> = {
+  head: 'Head',
+  neck: 'Neck',
+  chest: 'Chest',
+  abdomen: 'Abdomen',
+  back: 'Back',
+  left_arm: 'Left arm',
+  right_arm: 'Right arm',
+  left_leg: 'Left leg',
+  right_leg: 'Right leg',
+}
 
 /**
  * Log entry (PR-03).
