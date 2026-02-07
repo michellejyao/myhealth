@@ -57,10 +57,10 @@ export function LogsPage() {
   return (
     <PageContainer>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Health Logs</h1>
+        <h1 className="text-2xl font-bold text-white font-display">Health Logs</h1>
         <Link
           to="/logs/new"
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors"
+          className="px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg font-medium transition-colors shadow-lg shadow-black/20"
         >
           New Log
         </Link>
@@ -73,13 +73,13 @@ export function LogsPage() {
           placeholder="Search logs by title, description, body parts, severity, or date..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-800 placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="glass-input w-full"
         />
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="glass-input px-3 py-2 min-w-[200px]"
           >
             <option value="newest">Sort by: Newest First</option>
             <option value="oldest">Sort by: Oldest First</option>
@@ -87,14 +87,14 @@ export function LogsPage() {
             <option value="severity-low">Sort by: Severity (Low → High)</option>
           </select>
           {/* Result count */}
-          <div className="flex items-center text-sm text-slate-600">
+          <div className="flex items-center text-sm text-white/60">
             {filteredAndSortedLogs.length} of {logs.length} logs
           </div>
         </div>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 text-red-300 rounded-lg">
           {error}
         </div>
       )}
@@ -103,16 +103,16 @@ export function LogsPage() {
         <div className="text-center py-12">
           {logs.length === 0 ? (
             <>
-              <p className="text-slate-600 mb-4">No health logs yet. Create your first log!</p>
+              <p className="text-white/70 mb-4">No health logs yet. Create your first log!</p>
               <Link
                 to="/logs/new"
-                className="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors"
+                className="inline-block px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg font-medium transition-colors"
               >
                 Create Log
               </Link>
             </>
           ) : (
-            <p className="text-slate-600">No logs match your search criteria.</p>
+            <p className="text-white/70">No logs match your search criteria.</p>
           )}
         </div>
       ) : (
@@ -120,25 +120,25 @@ export function LogsPage() {
           {filteredAndSortedLogs.map((log) => (
             <div
               key={log.id}
-              className="border border-slate-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow"
+              className="glass-card p-4 hover:bg-white/[0.07] transition-colors"
             >
-              <div className="flex items-start justify-between">
-                <div>
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
                   <Link
                     to={`/logs/${log.id}`}
-                    className="text-lg font-semibold text-indigo-600 hover:underline"
+                    className="text-lg font-semibold text-brand hover:text-white transition-colors"
                   >
                     {log.title}
                   </Link>
                   {log.description && (
-                    <p className="text-slate-600 text-sm mt-1">{log.description}</p>
+                    <p className="text-white/70 text-sm mt-1 line-clamp-2">{log.description}</p>
                   )}
                   {log.body_parts && log.body_parts.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-2">
                       {log.body_parts.map((part) => (
                         <span
                           key={part}
-                          className="inline-block text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded"
+                          className="inline-block text-xs bg-brand/20 text-brand px-2 py-1 rounded border border-brand/30"
                         >
                           {part}
                         </span>
@@ -146,15 +146,15 @@ export function LogsPage() {
                     </div>
                   )}
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0">
                   {log.severity && (
                     <div className="mb-2">
-                      <p className="text-sm font-medium text-slate-700">
-                        Severity: <span className="text-red-600">{log.severity}/10</span>
+                      <p className="text-sm font-medium text-white/80">
+                        Severity: <span className="text-red-400">{log.severity}/10</span>
                       </p>
                     </div>
                   )}
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-white/50">
                     {new Date(log.date).toLocaleDateString()} at{' '}
                     {new Date(log.date).toLocaleTimeString()}
                   </p>
@@ -162,7 +162,7 @@ export function LogsPage() {
                     {log.id && (
                       <Link
                         to={`/logs/${log.id}/edit`}
-                        className="text-xs text-indigo-600 hover:text-indigo-700"
+                        className="text-xs text-brand hover:text-white"
                       >
                         Edit
                       </Link>
@@ -173,7 +173,7 @@ export function LogsPage() {
                           deleteLog(log.id)
                         }
                       }}
-                      className="text-xs text-red-600 hover:text-red-700"
+                      className="text-xs text-red-400 hover:text-red-300"
                     >
                       Delete
                     </button>

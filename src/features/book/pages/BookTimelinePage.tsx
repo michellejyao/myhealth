@@ -49,9 +49,9 @@ export function BookTimelinePage() {
     <BookPageLayout title="Timeline">
       <BookSection title="Chronological history">
         {loading ? (
-          <p className="text-sm text-[#6b6358]">Loading…</p>
+          <p className="text-sm text-black/70">Loading…</p>
         ) : logs.length === 0 ? (
-          <p className="text-sm text-[#6b6358]">No logs yet. Log symptoms from the body viewer.</p>
+          <p className="text-sm text-black/70">No logs yet. Log symptoms from the body viewer.</p>
         ) : (
           <ul className="space-y-2 max-h-[60vh] overflow-y-auto">
             {logs.map((log) => (

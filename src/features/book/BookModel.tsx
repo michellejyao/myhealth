@@ -73,7 +73,7 @@ const Page = ({
             position={[0.1 * scale, 1.5 * scale - i * 0.28 * scale, index * 0.003 * scale + 0.002 * scale]}
           >
             <boxGeometry args={[2.2 * scale, 0.02 * scale, 0.001 * scale]} />
-            <meshStandardMaterial color="#d4cfc4" />
+            <meshStandardMaterial color="#FFFFFF" />
           </mesh>
         ))}
       </group>
@@ -110,7 +110,7 @@ export const EndPage = ({
       >
         <boxGeometry args={[pageWidth, pageHeight, pageThickness]} />
         <meshStandardMaterial
-          color="#ffffff"
+          color="#FFFFFF"
           roughness={0.9}
           metalness={0}
         />
@@ -163,8 +163,8 @@ const BookCover = ({ isOpen, projectName, authorName, pagesClosed = true, scale 
   const frontCoverRef = useRef<THREE.Group>(null);
   const currentRotation = useRef(0);
 
-  const leatherColor = new THREE.Color('#5c3d2e');
-  const spineColor = new THREE.Color('#4a3020');
+  const leatherColor = new THREE.Color('#5c4033');
+  const spineColor = new THREE.Color('#4a3528');
 
   useFrame((_, delta) => {
     if (!frontCoverRef.current) return;
@@ -195,7 +195,7 @@ const BookCover = ({ isOpen, projectName, authorName, pagesClosed = true, scale 
           <Text
             position={[0, 0.3 * scale, 0.29 * scale]}
             fontSize={0.28 * scale}
-            color="#c9a227"
+            color="#FFFFFF"
             anchorX="center"
             anchorY="middle"
             maxWidth={2.5 * scale}
@@ -206,7 +206,7 @@ const BookCover = ({ isOpen, projectName, authorName, pagesClosed = true, scale 
           <Text
             position={[0, -0.3 * scale, 0.29 * scale]}
             fontSize={0.14 * scale}
-            color="#a88b5a"
+            color="#FFFFFF"
             anchorX="center"
             anchorY="middle"
             maxWidth={2 * scale}
@@ -288,15 +288,7 @@ const Book3D = ({
   };
 
   return (
-    <group
-      ref={bookRef}
-      onPointerDown={e => {
-        console.log('Book3D group pointerDown', e);
-      }}
-      onClick={e => {
-        console.log('Book3D group click', e);
-      }}
-    >
+    <group ref={bookRef}>
       {/* Book visuals ONLY */}
       <BookCover
         isOpen={isOpen}
@@ -333,8 +325,8 @@ const Book3D = ({
         </EndPage>
       )}
 
-      {/* Bookmarks always rendered last for top z-order */}
-      <group position={[0, 0.17 * scale, 0.25 * scale]}>
+      {/* Bookmarks on the right side of the book, flush with no gap */}
+      <group position={[1.5 * scale, 0, 0.25 * scale]}>
         {bookmarks.map((bm, i) => (
           <Bookmark3D
             key={i}
@@ -379,7 +371,7 @@ export interface BookModelProps {
 }
 
 const BookModel = ({
-  projectName = 'MyHealth',
+  projectName = 'Soma',
   authorName = 'Personal Health Journal',
   className = '',
   scale = 1,
@@ -410,11 +402,11 @@ const BookModel = ({
         }}
       >
 
-        <color attach="background" args={['#1a1412']} />
+        <color attach="background" args={['#000000']} />
         <ambientLight intensity={0.4} />
         <directionalLight position={[5, 5, 5]} intensity={1} castShadow shadow-mapSize={[2048, 2048]} />
-        <pointLight position={[-5, 3, -5]} intensity={0.5} color="#ffcba4" />
-        <spotLight position={[0, 8, 0]} intensity={0.8} angle={0.5} penumbra={0.5} color="#fff5e6" />
+        <pointLight position={[-5, 3, -5]} intensity={0.5} color="#FFFFFF" />
+        <spotLight position={[0, 8, 0]} intensity={0.8} angle={0.5} penumbra={0.5} color="#FFFFFF" />
 
         <Book3D
           isOpen={isOpen}

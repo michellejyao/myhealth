@@ -39,13 +39,12 @@ export const Bookmark3D = ({
         castShadow
         onPointerDown={(e: ThreeEvent<PointerEvent>) => {
           e.stopPropagation();
-          console.log('Bookmark3D clicked:', label);
           onClick();
         }}
       >
         <boxGeometry args={[0.5 * scale, bookmarkHeight, 0.04 * scale]} />
         <meshStandardMaterial
-          color="#f2c94c"
+          color="#FFD700"
           roughness={0.45}
           metalness={0.15}
         />
@@ -54,7 +53,7 @@ export const Bookmark3D = ({
       <Text
         position={[0, 0.25 * bookmarkHeight, 0.031 * scale]}
         fontSize={0.06 * scale}
-        color="#1a1a1a"
+        color="#000000"
         anchorX="center"
         anchorY="middle"
         maxWidth={0.5 * scale}

@@ -7,7 +7,8 @@ import { LogsPage } from './pages/LogsPage'
 import { LogDetailPage } from './pages/LogDetailPage'
 import { NewLogPage } from './pages/NewLogPage'
 import { EditLogPage } from './pages/EditLogPage'
-import { TimelinePage } from './pages/TimelinePage'
+import { AppointmentsPage } from './pages/AppointmentsPage'
+import { FamilyHistoryPage } from './pages/FamilyHistoryPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { LoadingSpinner } from './components/LoadingSpinner'
 
@@ -30,7 +31,8 @@ function App() {
         <Route path="logs/new" element={<NewLogPage />} />
         <Route path="logs/:id/edit" element={<EditLogPage />} />
         <Route path="logs/:id" element={<LogDetailPage />} />
-        <Route path="timeline" element={<TimelinePage />} />
+        <Route path="appointments" element={<AppointmentsPage />} />
+        <Route path="family-history" element={<FamilyHistoryPage />} />
         <Route path="profile" element={<ProfilePage />} />
       </Route>
     </Routes>

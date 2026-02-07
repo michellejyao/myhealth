@@ -11,7 +11,7 @@ import { appointmentService } from '../../../services/appointmentService'
 import type { AppointmentEntry } from '../../../types'
 
 const inputClass =
-  'w-full rounded border border-[#d4cfc4] bg-white px-3 py-2 text-[#2c2419] text-sm focus:border-[#5c4a3a] focus:outline-none focus:ring-1 focus:ring-[#5c4a3a]'
+  'w-full rounded border border-black/20 bg-white px-3 py-2 text-black text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent'
 
 export function DoctorAppointmentPage() {
   const { user } = useAuth0()
@@ -24,6 +24,7 @@ export function DoctorAppointmentPage() {
   const [doctorName, setDoctorName] = useState('')
   const [specialty, setSpecialty] = useState<Specialty>('general practitioner')
   const [reasonForVisit, setReasonForVisit] = useState('')
+  const [location, setLocation] = useState('')
   const [diagnosis, setDiagnosis] = useState('')
   const [doctorNotes, setDoctorNotes] = useState('')
   const [followUpRequired, setFollowUpRequired] = useState(false)
@@ -50,6 +51,7 @@ export function DoctorAppointmentPage() {
         doctor_name: doctorName.trim(),
         specialty,
         reason_for_visit: reasonForVisit.trim() || undefined,
+        location: location.trim() || undefined,
         diagnosis: diagnosis.trim() || undefined,
         doctor_notes: doctorNotes.trim() || undefined,
         follow_up_required: followUpRequired,
@@ -57,6 +59,7 @@ export function DoctorAppointmentPage() {
       setAppointments((prev) => [created, ...prev])
       setDoctorName('')
       setReasonForVisit('')
+      setLocation('')
       setDiagnosis('')
       setDoctorNotes('')
       setFollowUpRequired(false)
@@ -71,7 +74,7 @@ export function DoctorAppointmentPage() {
     <BookPageLayout title="Doctor appointments">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-2 rounded bg-amber-100 text-amber-800 text-sm">
+          <div className="p-2 rounded bg-brand/20 text-accent text-sm">
             {error}
           </div>
         )}
@@ -117,6 +120,15 @@ export function DoctorAppointmentPage() {
               className={inputClass}
             />
           </BookFormField>
+          <BookFormField label="Location">
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="e.g. Main Street Clinic, Room 101"
+              className={inputClass}
+            />
+          </BookFormField>
           <BookFormField label="Diagnosis" hint="Optional">
             <input
               type="text"
@@ -141,39 +153,40 @@ export function DoctorAppointmentPage() {
                 type="checkbox"
                 checked={followUpRequired}
                 onChange={(e) => setFollowUpRequired(e.target.checked)}
-                className="rounded border-[#d4cfc4] text-[#5c4a3a] focus:ring-[#5c4a3a]"
+                className="rounded border-black/20 text-accent focus:ring-accent"
               />
-              <span className="text-sm text-[#3d3629]">Yes</span>
+              <span className="text-sm text-black">Yes</span>
             </label>
           </BookFormField>
           <BookFormField label="Attachments" hint="Reports, scans, prescriptions — upload UI can be added.">
-            <p className="text-xs text-[#6b6358]">Attachments can be linked to this appointment in the Attachments page.</p>
+            <p className="text-xs text-black/70">Attachments can be linked to this appointment in the Attachments page.</p>
           </BookFormField>
           <BookSaveButton type="submit" label="Save appointment" saving={saving} />
         </BookSection>
 
         <BookSection title="Recent visits">
           {loading ? (
-            <p className="text-sm text-[#6b6358]">Loading…</p>
+            <p className="text-sm text-black/70">Loading…</p>
           ) : appointments.length === 0 ? (
-            <p className="text-sm text-[#6b6358]">No appointments recorded yet.</p>
+            <p className="text-sm text-black/70">No appointments recorded yet.</p>
           ) : (
             <ul className="space-y-2">
               {appointments.slice(0, 10).map((entry) => (
-                <li
-                  key={entry.id}
-                  className="p-2 rounded border border-[#e0d9cc] bg-white/80 text-sm text-[#3d3629]"
-                >
-                  <span className="font-medium">
-                    {new Date(entry.appointment_date).toLocaleDateString()}
-                  </span>
-                  {' — '}
-                  {entry.doctor_name} ({entry.specialty})
-                  {entry.reason_for_visit && ` — ${entry.reason_for_visit}`}
-                  {entry.follow_up_required && (
-                    <span className="ml-1 text-amber-700">Follow-up</span>
-                  )}
-                </li>
+              <li
+                key={entry.id}
+                className="p-2 rounded border border-black/10 bg-white/80 text-sm text-black"
+              >
+                <span className="font-medium">
+                  {new Date(entry.appointment_date).toLocaleDateString()}
+                </span>
+                {' — '}
+                {entry.doctor_name} ({entry.specialty})
+                {entry.reason_for_visit && ` — ${entry.reason_for_visit}`}
+                {entry.location && ` @ ${entry.location}`}
+                {entry.follow_up_required && (
+                  <span className="ml-1 text-accent">Follow-up</span>
+                )}
+              </li>
               ))}
             </ul>
           )}

@@ -115,10 +115,10 @@ export function EditLogPage() {
   if (error && !log) {
     return (
       <PageContainer>
-        <Link to="/logs" className="text-indigo-600 hover:text-indigo-700 font-medium mb-4 inline-block">
+        <Link to="/logs" className="text-brand hover:text-white font-medium mb-4 inline-block">
           ← Back to Logs
         </Link>
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <div className="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-3 rounded-lg">
           {error}
         </div>
       </PageContainer>
@@ -128,32 +128,32 @@ export function EditLogPage() {
   return (
     <PageContainer>
       <div className="flex items-center justify-between mb-4">
-        <Link to={`/logs/${id}`} className="text-indigo-600 hover:text-indigo-700 font-medium">
+        <Link to={`/logs/${id}`} className="text-brand hover:text-white font-medium">
           ← Back to Log
         </Link>
-        <Link to="/logs" className="text-sm text-slate-500 hover:text-slate-700">
+        <Link to="/logs" className="text-sm text-white/70 hover:text-white/90">
           All Logs
         </Link>
       </div>
 
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Edit Symptom Log</h1>
+      <h1 className="text-2xl font-bold text-white mb-6 font-display">Edit Symptom Log</h1>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 text-red-300 rounded-lg">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="bodyRegion" className="block text-sm font-medium text-slate-700 mb-1">
-            Body Region <span className="text-red-500">*</span>
+          <label htmlFor="bodyRegion" className="block text-sm font-medium text-white/80 mb-1">
+            Body Region <span className="text-red-400">*</span>
           </label>
           <select
             id="bodyRegion"
             value={bodyRegion}
             onChange={(event) => setBodyRegion(event.target.value as BodyRegionId)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="glass-input w-full"
             required
           >
             <option value="">Select a region…</option>
@@ -166,7 +166,7 @@ export function EditLogPage() {
         </div>
 
         <div>
-          <label htmlFor="datetime" className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="datetime" className="block text-sm font-medium text-white/80 mb-1">
             Date &amp; Time
           </label>
           <input
@@ -174,13 +174,13 @@ export function EditLogPage() {
             type="datetime-local"
             value={datetime}
             onChange={(event) => setDatetime(event.target.value)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="glass-input w-full"
           />
         </div>
 
         <div>
-          <label htmlFor="painScore" className="block text-sm font-medium text-slate-700 mb-1">
-            Pain Score: <span className="font-semibold text-indigo-600">{painScore}</span>
+          <label htmlFor="painScore" className="block text-sm font-medium text-white/80 mb-1">
+            Pain Score: <span className="font-semibold text-brand">{painScore}</span>
           </label>
           <input
             id="painScore"
@@ -189,17 +189,17 @@ export function EditLogPage() {
             max={10}
             value={painScore}
             onChange={(event) => setPainScore(Number(event.target.value))}
-            className="w-full accent-indigo-600"
+            className="w-full accent-brand"
           />
-          <div className="flex justify-between text-xs text-slate-400 mt-1">
+          <div className="flex justify-between text-xs text-white/50 mt-1">
             <span>0 (none)</span>
             <span>10 (severe)</span>
           </div>
         </div>
 
         <div>
-          <label htmlFor="tags" className="block text-sm font-medium text-slate-700 mb-1">
-            Tags <span className="text-slate-400 font-normal">(comma-separated)</span>
+          <label htmlFor="tags" className="block text-sm font-medium text-white/80 mb-1">
+            Tags <span className="text-white/50 font-normal">(comma-separated)</span>
           </label>
           <input
             id="tags"
@@ -207,12 +207,12 @@ export function EditLogPage() {
             value={tags}
             onChange={(event) => setTags(event.target.value)}
             placeholder="e.g. stress, after exercise"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="glass-input w-full"
           />
         </div>
 
         <div>
-          <label htmlFor="notes" className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="notes" className="block text-sm font-medium text-white/80 mb-1">
             Notes
           </label>
           <textarea
@@ -221,7 +221,7 @@ export function EditLogPage() {
             onChange={(event) => setNotes(event.target.value)}
             rows={3}
             placeholder="Describe the symptom…"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none"
+            className="w-full glass-input resize-none"
           />
         </div>
 
@@ -229,13 +229,13 @@ export function EditLogPage() {
           <button
             type="submit"
             disabled={isSaving}
-            className="flex-1 rounded-lg bg-indigo-600 px-4 py-2.5 text-white font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 rounded-lg bg-accent hover:bg-accent/90 px-4 py-2.5 text-white font-medium focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 focus:ring-offset-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSaving ? 'Saving...' : 'Save Changes'}
           </button>
           <Link
             to={`/logs/${id}`}
-            className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-4 py-2.5 text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center justify-center rounded-lg border border-white/20 px-4 py-2.5 text-white/80 hover:bg-white/10 transition-colors"
           >
             Cancel
           </Link>

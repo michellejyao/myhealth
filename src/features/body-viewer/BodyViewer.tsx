@@ -13,14 +13,14 @@ export function BodyViewer() {
   const setSelectedBodyRegion = useAppStore((s) => s.setSelectedBodyRegion)
   return (
     <div
-      className="rounded-xl overflow-hidden border border-slate-200 bg-slate-100"
+      className="rounded-xl overflow-hidden border border-white/20 bg-white/5"
       style={{ width: '100%', height: 700 }}
     >
       <Canvas
         camera={{ position: [0, 1.2, 10], fov: 45 }}
         style={{ width: '100%', height: '100%' }}
         fallback={
-          <div className="flex items-center justify-center w-full h-full text-slate-600 text-sm bg-slate-200">
+          <div className="flex items-center justify-center w-full h-full text-white/70 text-sm bg-white/10">
             WebGL unavailable — 3D viewer cannot load
           </div>
         }
@@ -31,7 +31,7 @@ export function BodyViewer() {
           fallback={
             <mesh>
               <boxGeometry args={[0.4, 0.4, 0.4]} />
-              <meshStandardMaterial color="#94a3b8" />
+              <meshStandardMaterial color="#13346c" />
             </mesh>
           }
         >

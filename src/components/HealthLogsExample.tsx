@@ -33,10 +33,10 @@ export function HealthLogsExample() {
   if (!isAuthenticated) {
     return (
       <div className="text-center py-10">
-        <h1 className="text-2xl font-bold mb-4">Welcome to MyHealth</h1>
+        <h1 className="text-2xl font-bold mb-4">Welcome to Soma</h1>
         <button
           onClick={() => loginWithRedirect()}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+          className="bg-accent text-white px-6 py-2 rounded hover:bg-accent/90"
         >
           Sign In with Auth0
         </button>
@@ -73,7 +73,7 @@ export function HealthLogsExample() {
 
       <button
         onClick={handleCreateLog}
-        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-6"
+        className="bg-accent text-white px-4 py-2 rounded hover:bg-accent/90 mb-6"
       >
         + Create New Log
       </button>
@@ -85,7 +85,7 @@ export function HealthLogsExample() {
       ) : (
         <div className="grid gap-4">
           {logs.map(log => (
-            <div key={log.id} className="border rounded-lg p-4 bg-white shadow">
+            <div key={log.id} className="border border-white/10 rounded-lg p-4 bg-white/5 shadow">
               <h3 className="font-bold text-lg">{log.title}</h3>
               <p className="text-gray-600 text-sm">{log.description}</p>
               {log.body_parts && log.body_parts.length > 0 && (

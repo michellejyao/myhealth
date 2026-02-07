@@ -10,7 +10,7 @@ export function BookSection({ title, children, className = '' }: BookSectionProp
   return (
     <section className={`book-section ${className}`}>
       {title && (
-        <h3 className="text-sm font-semibold text-[#4a4238] uppercase tracking-wider mb-2">
+        <h3 className="text-sm font-semibold text-black/80 uppercase tracking-wider mb-2">
           {title}
         </h3>
       )}

@@ -21,14 +21,14 @@ export function BookFormField({
     <div className={`book-form-field ${className}`}>
       <label
         htmlFor={htmlFor}
-        className="block text-sm font-medium text-[#3d3629] mb-1"
+        className="block text-sm font-medium text-black mb-1"
       >
         {label}
-        {required && <span className="text-amber-700 ml-0.5">*</span>}
+        {required && <span className="text-accent ml-0.5">*</span>}
       </label>
       {children}
       {hint && (
-        <p className="mt-1 text-xs text-[#6b6358]">{hint}</p>
+        <p className="mt-1 text-xs text-black/70">{hint}</p>
       )}
     </div>
   )

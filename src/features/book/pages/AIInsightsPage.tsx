@@ -26,21 +26,21 @@ export function AIInsightsPage() {
     return (
       <BookPageLayout title="Insight detail">
         <div className="space-y-3">
-          <h3 className="font-semibold text-[#3d3629]">{selectedFlag.title}</h3>
-          <p className="text-sm text-[#4a4238]">
+          <h3 className="font-semibold text-black">{selectedFlag.title}</h3>
+          <p className="text-sm text-black/80">
             <strong>Confidence:</strong> {selectedFlag.confidence_score}%
           </p>
-          <p className="text-sm text-[#4a4238]">
+          <p className="text-sm text-black/80">
             <strong>Severity:</strong> {selectedFlag.severity}
           </p>
-          <p className="text-sm text-[#4a4238]">
+          <p className="text-sm text-black/80">
             <strong>Risk score:</strong> {selectedFlag.risk_score}/100
           </p>
-          <p className="text-sm text-[#2c2419] mt-2">{selectedFlag.reasoning_summary}</p>
+          <p className="text-sm text-black mt-2">{selectedFlag.reasoning_summary}</p>
           <button
             type="button"
             onClick={() => setSelectedFlag(null)}
-            className="text-sm text-[#5c4a3a] underline mt-4"
+            className="text-sm text-accent underline mt-4"
           >
             ← Back to insights
           </button>
@@ -52,12 +52,12 @@ export function AIInsightsPage() {
   return (
     <BookPageLayout title="AI insights">
       {loading ? (
-        <p className="text-sm text-[#6b6358]">Loading…</p>
+        <p className="text-sm text-black/70">Loading…</p>
       ) : (
         <>
           <BookSection title="Insights &amp; flags">
             {flags.length === 0 ? (
-              <p className="text-sm text-[#6b6358]">
+              <p className="text-sm text-black/70">
                 No AI insights yet. Save symptom logs to run pattern analysis.
               </p>
             ) : (
@@ -67,13 +67,13 @@ export function AIInsightsPage() {
                     <button
                       type="button"
                       onClick={() => setSelectedFlag(flag)}
-                      className="w-full text-left p-3 rounded border border-[#e0d9cc] bg-white/80 hover:bg-[#faf8f5] transition-colors"
+                      className="w-full text-left p-3 rounded border border-black/10 bg-white/80 hover:bg-white transition-colors"
                     >
-                      <span className="font-medium text-[#3d3629]">{flag.title}</span>
-                      <span className="ml-2 text-xs text-[#6b6358]">
+                      <span className="font-medium text-black">{flag.title}</span>
+                      <span className="ml-2 text-xs text-black/70">
                         {flag.confidence_score}% · {flag.severity} · Risk {flag.risk_score}
                       </span>
-                      <p className="text-sm text-[#6b6358] mt-1 line-clamp-2">
+                      <p className="text-sm text-black/70 mt-1 line-clamp-2">
                         {flag.reasoning_summary}
                       </p>
                     </button>
@@ -88,11 +88,11 @@ export function AIInsightsPage() {
                 {summaries.map((s) => (
                   <li
                     key={s.id}
-                    className="p-3 rounded border border-[#e0d9cc] bg-white/80 text-sm text-[#3d3629]"
+                    className="p-3 rounded border border-black/10 bg-white/80 text-sm text-black"
                   >
                     {s.summary_text}
                     {(s.date_range_start || s.date_range_end) && (
-                      <p className="text-xs text-[#6b6358] mt-1">
+                      <p className="text-xs text-black/70 mt-1">
                         {s.date_range_start && new Date(s.date_range_start).toLocaleDateString()}
                         {' – '}
                         {s.date_range_end && new Date(s.date_range_end).toLocaleDateString()}

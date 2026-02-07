@@ -9,6 +9,8 @@ export interface AppointmentPayload {
   diagnosis?: string
   doctor_notes?: string
   follow_up_required: boolean
+  location?: string
+  questions_to_ask?: string[]
 }
 
 export const appointmentService = {
@@ -23,6 +25,8 @@ export const appointmentService = {
       diagnosis: payload.diagnosis ?? null,
       doctor_notes: payload.doctor_notes ?? null,
       follow_up_required: payload.follow_up_required ?? false,
+      location: payload.location ?? null,
+      questions_to_ask: payload.questions_to_ask ?? [],
     }
     const { data, error } = await supabase.from('appointments').insert([row]).select()
     if (error) throw new Error(`Failed to create appointment: ${error.message}`)

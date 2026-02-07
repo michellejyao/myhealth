@@ -112,17 +112,17 @@ export function AvatarCreator({
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-black/10">
           <div>
-            <h2 className="font-semibold text-slate-800">Create Your Avatar</h2>
-            <p className="text-sm text-slate-500">Customize your 3D body model</p>
+            <h2 className="font-semibold text-black">Create Your Avatar</h2>
+            <p className="text-sm text-black/70">Customize your 3D body model</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-black/5 rounded-lg transition-colors"
             aria-label="Close"
           >
-            <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5 text-black/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -131,10 +131,10 @@ export function AvatarCreator({
         {/* Iframe container */}
         <div className="flex-1 relative">
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
+            <div className="absolute inset-0 flex items-center justify-center bg-white">
               <div className="flex flex-col items-center gap-3">
-                <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
-                <p className="text-sm text-slate-600">Loading avatar creator...</p>
+                <div className="w-10 h-10 border-4 border-brand/30 border-t-accent rounded-full animate-spin" />
+                <p className="text-sm text-black/80">Loading avatar creator...</p>
               </div>
             </div>
           )}
@@ -148,20 +148,20 @@ export function AvatarCreator({
         </div>
 
         {/* Footer with info */}
-        <div className="px-4 py-3 border-t border-slate-200 bg-slate-50">
-          <p className="text-xs text-slate-500 text-center mb-2">
+        <div className="px-4 py-3 border-t border-black/10 bg-white">
+          <p className="text-xs text-black/70 text-center mb-2">
             Powered by Ready Player Me. Your avatar will be used in the body viewer for symptom logging.
           </p>
-          <details className="text-xs text-slate-400">
-            <summary className="cursor-pointer hover:text-slate-600 text-center">
+          <details className="text-xs text-black/70">
+            <summary className="cursor-pointer hover:text-black text-center">
               Want minimal clothing for medical use?
             </summary>
-            <div className="mt-2 p-2 bg-white rounded border border-slate-200 text-left">
+            <div className="mt-2 p-2 bg-white rounded border border-black/10 text-left">
               <p className="mb-2">
                 <strong>Options for medical-appropriate avatars:</strong>
               </p>
               <ol className="list-decimal ml-4 space-y-1">
-                <li>Create custom subdomain at <a href="https://studio.readyplayer.me" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">studio.readyplayer.me</a> to limit clothing options</li>
+                <li>Create custom subdomain at <a href="https://studio.readyplayer.me" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">studio.readyplayer.me</a> to limit clothing options</li>
                 <li>Choose simple, neutral clothing during creation (t-shirt, plain pants)</li>
                 <li>Alternative: Use anatomical 3D models from medical sources (e.g., BioDigital, Visible Body)</li>
               </ol>

@@ -29,15 +29,15 @@ export function TimelinePage() {
 
   return (
     <PageContainer>
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Timeline</h1>
+      <h1 className="text-2xl font-bold text-white mb-6 font-display">Timeline</h1>
 
       {logs.length === 0 ? (
-        <div className="text-center py-10 text-slate-600">No logs to display</div>
+        <div className="text-center py-10 text-white/70">No logs to display</div>
       ) : (
         <div className="space-y-8">
           {sortedDates.map((date) => (
             <div key={date}>
-              <h2 className="text-lg font-semibold text-slate-800 mb-3 sticky top-0 bg-slate-50 py-2">
+              <h2 className="text-lg font-semibold text-white/90 mb-3 sticky top-0 bg-black/80 backdrop-blur py-2 z-10">
                 {new Date(date).toLocaleDateString('en-US', {
                   weekday: 'long',
                   year: 'numeric',
@@ -45,24 +45,24 @@ export function TimelinePage() {
                   day: 'numeric',
                 })}
               </h2>
-              <div className="space-y-3 border-l-2 border-indigo-300 pl-4">
+              <div className="space-y-3 border-l-2 border-brand/50 pl-4">
                 {groupedLogs[date].map((log) => (
                   <div key={log.id} className="relative pb-6">
-                    <div className="absolute -left-6 mt-1 w-3 h-3 bg-indigo-600 rounded-full"></div>
-                    <div className="bg-white rounded border border-slate-200 p-4">
+                    <div className="absolute -left-6 mt-1 w-3 h-3 bg-brand rounded-full"></div>
+                    <div className="glass-card p-4">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <p className="font-semibold text-slate-800">{log.title}</p>
+                          <p className="font-semibold text-white/90">{log.title}</p>
                           {log.description && (
-                            <p className="text-sm text-slate-600 mt-1">{log.description}</p>
+                            <p className="text-sm text-white/70 mt-1">{log.description}</p>
                           )}
                           {log.severity && (
-                            <p className="text-sm text-slate-600 mt-2">
-                              Severity: <span className="text-red-600 font-medium">{log.severity}/10</span>
+                            <p className="text-sm text-white/70 mt-2">
+                              Severity: <span className="text-red-400 font-medium">{log.severity}/10</span>
                             </p>
                           )}
                         </div>
-                        <p className="text-xs text-slate-500 whitespace-nowrap ml-4">
+                        <p className="text-xs text-white/50 whitespace-nowrap ml-4">
                           {new Date(log.date).toLocaleTimeString()}
                         </p>
                       </div>
