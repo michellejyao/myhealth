@@ -61,6 +61,9 @@ export function BodyModel({
   const groupRef = useRef<Group>(null);
   const [hovered, setHovered] = useState(false);
   useCursor(hovered);
+  
+  // Track pointer down position to prevent accidental clicks
+  const pointerDownRef = useRef<{ region: BodyRegionId | null; x: number; y: number } | null>(null);
 
   const { scene } = useGLTF(MODEL_PATH) as { scene: Group };
 
@@ -83,7 +86,34 @@ export function BodyModel({
   const onPointerDown = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
     const region = (e.object as Mesh).userData?.region as BodyRegionId | undefined;
-    if (region && regionSet.has(region)) onSelectRegion(region);
+    if (region && regionSet.has(region)) {
+      // Store the pointer down position and region
+      pointerDownRef.current = { region, x: e.clientX, y: e.clientY };
+    }
+  };
+
+  const onPointerUp = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    const region = (e.object as Mesh).userData?.region as BodyRegionId | undefined;
+    
+    // Only trigger if we pressed down and up on the same region at approximately the same position
+    if (
+      region &&
+      pointerDownRef.current &&
+      pointerDownRef.current.region === region &&
+      regionSet.has(region)
+    ) {
+      // Check if pointer moved less than 5 pixels (prevents drag/accidental clicks)
+      const deltaX = Math.abs(e.clientX - pointerDownRef.current.x);
+      const deltaY = Math.abs(e.clientY - pointerDownRef.current.y);
+      
+      if (deltaX < 5 && deltaY < 5) {
+        onSelectRegion(region);
+      }
+    }
+    
+    // Clear the pointer down reference
+    pointerDownRef.current = null;
   };
 
   const { centeredPosition, uniformScale } = useMemo(() => {
@@ -121,6 +151,7 @@ export function BodyModel({
                   userData={{ region: id }}
                   renderOrder={1}
                   onPointerDown={onPointerDown}
+                  onPointerUp={onPointerUp}
                   onPointerOver={() => setHovered(true)}
                   onPointerOut={() => setHovered(false)}
                 >
