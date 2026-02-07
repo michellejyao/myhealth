@@ -16,8 +16,6 @@ export const Bookmark3D = ({
   label,
   position,
   scale = 1,
-  notchDepth,
-  shadowColor,
   height,
   onClick,
 }: Bookmark3DProps) => {
