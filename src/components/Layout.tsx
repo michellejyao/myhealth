@@ -17,7 +17,7 @@ export function Layout() {
       <header className="bg-white border-b border-slate-200 px-4 py-3 shadow-sm">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <Link to="/" className="text-xl font-bold text-indigo-600 hover:text-indigo-700">
-            MyHealth
+            Soma
           </Link>
           <nav className="flex gap-6 items-center">
             {nav.map(({ to, label }) => (

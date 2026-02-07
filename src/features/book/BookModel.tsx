@@ -97,12 +97,12 @@ export const EndPage = ({
   children,
 }: EndPageProps) => {
   const pageWidth = 2.7 * scale;
-  const pageHeight = 3.9 * scale;
+  const pageHeight = 3.65 * scale;
   const pageThickness = 0.002 * scale;
 
   return (
     <group position={position} rotation={rotation}>
-      {/* Physical page */}
+      {/* Physical page (slightly shorter for input area) */}
       <mesh
         position={[1.4 * scale, 0, 0]}
         castShadow
@@ -233,6 +233,8 @@ interface Book3DProps {
   authorName: string;
   scale?: number;
   bookmarks?: Bookmark[];
+  /** When set, book opens and shows this content (e.g. body region log from body click). */
+  openWithContent?: ReactNode;
 }
 
 const Book3D = ({
@@ -242,12 +244,21 @@ const Book3D = ({
   authorName,
   scale = 1,
   bookmarks = [],
+  openWithContent,
 }: Book3DProps) => {
   const bookRef = useRef<THREE.Group>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedComponent, setSelectedComponent] = useState<ReactNode | null>(null);
   const [pageRotations, setPageRotations] = useState<number[]>([]);
   const pageCount = 8;
+
+  const displayComponent = openWithContent ?? selectedComponent;
+
+  useEffect(() => {
+    if (openWithContent) {
+      setSelectedComponent(openWithContent);
+    }
+  }, [openWithContent]);
 
   const handleRotationChange = (index: number, rotationY: number) => {
     setPageRotations((prev) => {
@@ -271,13 +282,9 @@ const Book3D = ({
   }, [isOpen, currentPage]);
 
   const handleBookmarkClick = (component: ReactNode) => {
-    console.log('handleBookmarkClick called', component);
     setSelectedComponent(component);
     setCurrentPage(0);
-
-    if (!isOpen) {
-      onToggle(); // open the book
-    }
+    if (!isOpen) onToggle();
   };
 
   return (
@@ -316,26 +323,26 @@ const Book3D = ({
 
       {/* 🔖 BOOKMARKS (ONLY CLICKABLE OBJECTS) */}
       {/* End Page */}
-      {selectedComponent && currentPage >= pageCount && (
+      {displayComponent && currentPage >= pageCount && (
         <EndPage
           position={[-1.5 * scale, 0, 0.05 * scale + pageCount * 0.01 * scale]}
           rotation={[0, 0, 0]}
           scale={scale}
         >
-          {selectedComponent}
+          {displayComponent}
         </EndPage>
       )}
 
-      {/* Bookmarks always rendered last for top z-order */}
-      <group position={[0, 0.3 * scale, 0.25 * scale]}>
+      {/* Bookmarks on the right side of the book, flush with no gap */}
+      <group position={[1.5 * scale, 0, 0.25 * scale]}>
         {bookmarks.map((bm, i) => (
           <Bookmark3D
             key={i}
             label={bm.label}
             scale={scale * 1.2}
             position={[
-              -1 * scale + i * 1 * scale,
-              1.95 * scale,
+              0.25 * scale,
+              (1.0 - i * 0.5) * scale,
               0,
             ]}
             notchDepth={0.18 * scale}
@@ -346,14 +353,14 @@ const Book3D = ({
         ))}
       </group>
 
-      {/* End Page */}
-      {selectedComponent && currentPage >= pageCount && (
+      {/* End Page duplicate for both sides - use displayComponent */}
+      {displayComponent && currentPage >= pageCount && (
         <EndPage
           position={[-1.5 * scale, 0, 0.05 * scale + pageCount * 0.01 * scale]}
           rotation={[0, 0, 0]}
           scale={scale}
         >
-          {selectedComponent}
+          {displayComponent}
         </EndPage>
       )}
     </group>
@@ -368,6 +375,9 @@ export interface BookModelProps {
   className?: string;
   scale?: number;
   bookmarks?: Bookmark[];
+  /** When set, book opens and shows this content (e.g. body region log). */
+  openWithContent?: ReactNode;
+  onClose?: () => void;
 }
 
 const BookModel = ({
@@ -376,8 +386,21 @@ const BookModel = ({
   className = '',
   scale = 1,
   bookmarks = [],
+  openWithContent,
+  onClose,
 }: BookModelProps) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (openWithContent) setIsOpen(true);
+  }, [openWithContent]);
+
+  const handleToggle = () => {
+    setIsOpen((prev) => {
+      if (prev) onClose?.();
+      return !prev;
+    });
+  };
 
   return (
     <div className={`relative w-full h-full min-h-[500px] ${className}`}>
@@ -397,11 +420,12 @@ const BookModel = ({
 
         <Book3D
           isOpen={isOpen}
-          onToggle={() => setIsOpen(!isOpen)}
+          onToggle={handleToggle}
           projectName={projectName}
           authorName={authorName}
           scale={scale}
           bookmarks={bookmarks}
+          openWithContent={openWithContent}
         />
 
         <Environment preset="apartment" />

@@ -1,34 +1,52 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useMemo } from 'react'
 import { BodyViewer } from '../features/body-viewer/BodyViewer'
 import BookModel from '../features/book/BookModel'
+import {
+  BodyRegionLogPage,
+  FamilyHealthHistoryPage,
+  DoctorAppointmentPage,
+  BookTimelinePage,
+  AIInsightsPage,
+  AttachmentsPage,
+} from '../features/book/pages'
 import { useAppStore } from '../store'
 import { PageContainer } from '../components/PageContainer'
-
-function Page1() {
-  return <div style={{ padding: 20 }}>📄 This is page 1 content!</div>;
-}
-
-function Page2() {
-  return <div style={{ padding: 20 }}>📄 Page 2 content, maybe some images!</div>;
-}
-
-function Page3() {
-  return <div style={{ padding: 20 }}>📄 Page 3 content, maybe some images!</div>;
-}
-
 
 export function HomePage() {
   const selectedBodyRegion = useAppStore((s) => s.selectedBodyRegion)
   const setSelectedBodyRegion = useAppStore((s) => s.setSelectedBodyRegion)
-  const navigate = useNavigate()
+  const openBookTo = useAppStore((s) => s.openBookTo)
+  const setOpenBookTo = useAppStore((s) => s.setOpenBookTo)
 
+  // When user clicks a body region: open the book and show body region log page
   useEffect(() => {
     if (selectedBodyRegion) {
-      navigate('/logs/new', { state: { bodyRegion: selectedBodyRegion } })
+      setOpenBookTo({ type: 'body_region', region: selectedBodyRegion })
       setSelectedBodyRegion(null)
     }
-  }, [selectedBodyRegion, navigate, setSelectedBodyRegion])
+  }, [selectedBodyRegion, setSelectedBodyRegion, setOpenBookTo])
+
+  const bookmarks = useMemo(
+    () => [
+      { label: 'Timeline', component: <BookTimelinePage /> },
+      { label: 'Family history', component: <FamilyHealthHistoryPage /> },
+      { label: 'Appointments', component: <DoctorAppointmentPage /> },
+      { label: 'AI insights', component: <AIInsightsPage /> },
+      { label: 'Attachments', component: <AttachmentsPage /> },
+    ],
+    []
+  )
+
+  const openWithContent = useMemo(() => {
+    if (openBookTo?.type !== 'body_region') return undefined
+    return (
+      <BodyRegionLogPage
+        bodyRegion={openBookTo.region}
+        onSaved={() => setOpenBookTo(null)}
+        onCancel={() => setOpenBookTo(null)}
+      />
+    )
+  }, [openBookTo])
 
 
   return (
@@ -47,11 +65,13 @@ export function HomePage() {
           
           {/* Left section */}
           <div className="w-1/2 flex items-center justify-center p-6">
-            <BookModel projectName="Health Tracker" bookmarks={[
-    { label: 'Records', component: <Page1 /> },
-    { label: 'Family History', component: <Page2 /> },
-    { label: 'Medications', component: <Page3 /> },
-  ]} />
+            <BookModel
+              projectName="Health Tracker"
+              authorName="Personal Health Journal"
+              bookmarks={bookmarks}
+              openWithContent={openWithContent}
+              onClose={() => setOpenBookTo(null)}
+            />
           </div>
 
           {/* Divider */}
