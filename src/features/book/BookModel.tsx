@@ -333,8 +333,8 @@ const Book3D = ({
         </EndPage>
       )}
 
-      {/* Bookmarks on the right side of the book, flush with no gap */}
-      <group position={[1.5 * scale, 0, 0.25 * scale]}>
+      {/* Bookmarks always rendered last for top z-order */}
+      <group position={[0, 0.17 * scale, 0.25 * scale]}>
         {bookmarks.map((bm, i) => (
           <Bookmark3D
             key={i}
@@ -345,9 +345,7 @@ const Book3D = ({
               (1.0 - i * 0.5) * scale,
               0,
             ]}
-            notchDepth={0.18 * scale}
-            shadowColor="#d1b36a"
-            height={0.32 * scale}
+            height={0.25 * scale}
             onClick={() => handleBookmarkClick(bm.component)}
           />
         ))}

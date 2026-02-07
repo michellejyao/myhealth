@@ -1,41 +1,79 @@
 /**
- * Re-export body region types and constants from app types.
+ * Body region definitions and utilities.
+ * Central source of truth for all body region identifiers.
  */
-export {
-  BODY_REGIONS,
-  BODY_REGION_LABELS,
-  type BodyRegionId,
-} from '../../types'
 
-export const BODY_REGION_LIST = [
-  { id: 'head' as const, label: 'Head' },
-  { id: 'neck' as const, label: 'Neck' },
-  { id: 'chest' as const, label: 'Chest' },
-  { id: 'abdomen' as const, label: 'Abdomen' },
-  { id: 'back' as const, label: 'Back' },
-  { id: 'left_arm' as const, label: 'Left arm' },
-  { id: 'right_arm' as const, label: 'Right arm' },
-  { id: 'left_leg' as const, label: 'Left leg' },
-  { id: 'right_leg' as const, label: 'Right leg' },
-]
+/**
+ * Valid body region identifiers.
+ */
+export type BodyRegionId =
+  | 'head'
+  | 'neck'
+  | 'chest'
+  | 'back'
+  | 'abdomen'
+  | 'left_arm'
+  | 'right_arm'
+  | 'left_leg'
+  | 'right_leg'
 
-export type BodyRegionDef = (typeof BODY_REGION_LIST)[number]
-
-export function getBodyRegionLabel(id: string): string {
-  const labels: Record<string, string> = {
-    head: 'Head',
-    neck: 'Neck',
-    chest: 'Chest',
-    abdomen: 'Abdomen',
-    back: 'Back',
-    left_arm: 'Left arm',
-    right_arm: 'Right arm',
-    left_leg: 'Left leg',
-    right_leg: 'Right leg',
-  }
-  return labels[id] ?? id
+/**
+ * Definition for a body region with metadata.
+ */
+export interface BodyRegionDef {
+  id: BodyRegionId
+  label: string
+  description?: string
 }
 
-export function isBodyRegionId(id: string): id is import('../../types').BodyRegionId {
-  return ['head', 'neck', 'chest', 'abdomen', 'back', 'left_arm', 'right_arm', 'left_leg', 'right_leg'].includes(id)
+/**
+ * Array of all valid body region IDs.
+ */
+export const BODY_REGIONS: BodyRegionId[] = [
+  'head',
+  'neck',
+  'chest',
+  'back',
+  'abdomen',
+  'left_arm',
+  'right_arm',
+  'left_leg',
+  'right_leg',
+]
+
+/**
+ * Human-readable labels for each body region.
+ */
+export const BODY_REGION_LABELS: Record<BodyRegionId, string> = {
+  head: 'Head',
+  neck: 'Neck',
+  chest: 'Chest',
+  back: 'Back',
+  abdomen: 'Abdomen',
+  left_arm: 'Left Arm',
+  right_arm: 'Right Arm',
+  left_leg: 'Left Leg',
+  right_leg: 'Right Leg',
+}
+
+/**
+ * List of body region definitions with full metadata.
+ */
+export const BODY_REGION_LIST: BodyRegionDef[] = BODY_REGIONS.map((id) => ({
+  id,
+  label: BODY_REGION_LABELS[id],
+}))
+
+/**
+ * Get the human-readable label for a body region.
+ */
+export function getBodyRegionLabel(regionId: BodyRegionId): string {
+  return BODY_REGION_LABELS[regionId]
+}
+
+/**
+ * Type guard to check if a string is a valid BodyRegionId.
+ */
+export function isBodyRegionId(value: unknown): value is BodyRegionId {
+  return typeof value === 'string' && BODY_REGIONS.includes(value as BodyRegionId)
 }

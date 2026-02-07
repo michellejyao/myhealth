@@ -71,17 +71,25 @@ export function LogDetailPage() {
       </Link>
 
       <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex flex-wrap justify-between items-start gap-3 mb-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-900">{log.title}</h1>
             <p className="text-slate-600 mt-1">{log.description}</p>
           </div>
-          <button
-            onClick={handleDelete}
-            className="px-3 py-1.5 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors"
-          >
-            Delete
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              to={`/logs/${log.id}/edit`}
+              className="px-3 py-1.5 text-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200 rounded-lg font-medium transition-colors"
+            >
+              Edit
+            </Link>
+            <button
+              onClick={handleDelete}
+              className="px-3 py-1.5 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors"
+            >
+              Delete
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-200">

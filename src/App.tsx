@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage'
 import { LogsPage } from './pages/LogsPage'
 import { LogDetailPage } from './pages/LogDetailPage'
 import { NewLogPage } from './pages/NewLogPage'
+import { EditLogPage } from './pages/EditLogPage'
 import { TimelinePage } from './pages/TimelinePage'
 import { ProfilePage } from './pages/ProfilePage'
 import { LoadingSpinner } from './components/LoadingSpinner'
@@ -27,6 +28,7 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="logs" element={<LogsPage />} />
         <Route path="logs/new" element={<NewLogPage />} />
+        <Route path="logs/:id/edit" element={<EditLogPage />} />
         <Route path="logs/:id" element={<LogDetailPage />} />
         <Route path="timeline" element={<TimelinePage />} />
         <Route path="profile" element={<ProfilePage />} />
