@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { BODY_REGIONS, BODY_REGION_LABELS, PAIN_TYPES, type BodyRegionId, type PainType } from '../types'
 import { useHealthLogs } from '../hooks/useHealthLogs'
+import { attachmentService } from '../services/attachmentService'
 import { PageContainer } from '../components/PageContainer'
 
 /**
@@ -13,7 +14,7 @@ export function NewLogPage() {
   const navigate = useNavigate()
   const state = location.state as { bodyRegion?: BodyRegionId } | null
   const initialRegion = state?.bodyRegion ?? null
-  const { createLog, isLoading: isSaving } = useHealthLogs()
+  const { createLog, isLoading: isSaving, user } = useHealthLogs()
 
   // Form state
   const [bodyRegion, setBodyRegion] = useState<BodyRegionId | ''>(initialRegion ?? '')
@@ -26,6 +27,7 @@ export function NewLogPage() {
   const [painType, setPainType] = useState<PainType>('aching')
   const [painTypeOther, setPainTypeOther] = useState('')
   const [notes, setNotes] = useState('')
+  const [attachmentFiles, setAttachmentFiles] = useState<File[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,8 +41,7 @@ export function NewLogPage() {
 
     try {
       const effectivePainType = painType === 'other' && painTypeOther.trim() ? painTypeOther.trim() : painType
-      
-      await createLog({
+      const newLog = await createLog({
         title: BODY_REGION_LABELS[bodyRegion as BodyRegionId],
         description: notes || undefined,
         body_parts: [bodyRegion as BodyRegionId],
@@ -49,6 +50,16 @@ export function NewLogPage() {
         severity: painScore,
         date: new Date(datetime).toISOString(),
       })
+
+      if (newLog?.id && attachmentFiles.length > 0 && user?.sub) {
+        for (const file of attachmentFiles) {
+          try {
+            await attachmentService.uploadLogAttachment(user.sub, newLog.id, file)
+          } catch {
+            // continue with other files; log is already saved
+          }
+        }
+      }
 
       navigate('/logs')
     } catch (err) {
@@ -186,6 +197,41 @@ export function NewLogPage() {
             placeholder="Describe the symptom…"
             className="w-full glass-input resize-none"
           />
+        </div>
+
+        {/* Attachments */}
+        <div>
+          <label htmlFor="attachments" className="block text-sm font-medium text-white/80 mb-1">
+            Attach file or image
+          </label>
+          <input
+            id="attachments"
+            type="file"
+            accept="image/*,video/*,audio/*,.pdf"
+            multiple
+            onChange={(e) => {
+              const files = e.target.files ? Array.from(e.target.files) : []
+              setAttachmentFiles((prev) => [...prev, ...files])
+            }}
+            className="w-full text-sm text-white/80 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-brand/80 file:text-white file:font-medium hover:file:bg-brand/90"
+          />
+          {attachmentFiles.length > 0 && (
+            <ul className="mt-2 space-y-1 text-sm text-white/70">
+              {attachmentFiles.map((f, i) => (
+                <li key={i} className="flex items-center justify-between gap-2">
+                  <span className="truncate">{f.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => setAttachmentFiles((prev) => prev.filter((_, j) => j !== i))}
+                    className="shrink-0 text-red-400 hover:text-red-300"
+                    aria-label="Remove"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Submit */}

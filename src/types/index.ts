@@ -187,3 +187,33 @@ export interface LogFlag {
   references: string[] // log IDs or field names
   createdAt: string
 }
+
+/** Single finding from medical image analysis (abnormality detection). */
+export interface MedicalImageFinding {
+  label: string
+  confidence: number
+  region?: string
+  description?: string
+}
+
+/** Result from medical image analysis API (MONAI segmentation + abnormality). */
+export interface MedicalImageAnalysisResult {
+  segmentation_mask_b64: string
+  segmentation_labels: string[]
+  findings: MedicalImageFinding[]
+  meta?: { input_shape?: number[]; mask_shape?: number[]; num_findings?: number }
+}
+
+/** Stored row in medical_image_analyses table. */
+export interface MedicalImageAnalysisEntry {
+  id: string
+  user_id: string
+  log_id: string
+  attachment_id: string
+  segmentation_storage_path: string | null
+  segmentation_labels: string[]
+  findings: MedicalImageFinding[]
+  meta: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}

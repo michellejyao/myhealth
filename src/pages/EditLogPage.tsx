@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 import { BODY_REGIONS, BODY_REGION_LABELS, type BodyRegionId } from '../types'
+import type { AttachmentEntry } from '../types'
 import { logService, type HealthLog } from '../services/logService'
+import { attachmentService } from '../services/attachmentService'
 import { useHealthLogs } from '../hooks/useHealthLogs'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { PageContainer } from '../components/PageContainer'
@@ -22,12 +25,16 @@ const parseBodyParts = (bodyParts?: string[]) => {
 export function EditLogPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user } = useAuth0()
+  const userId = user?.sub ?? ''
   const { updateLog } = useHealthLogs()
 
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [log, setLog] = useState<HealthLog | null>(null)
+  const [attachments, setAttachments] = useState<AttachmentEntry[]>([])
 
   const [bodyRegion, setBodyRegion] = useState<BodyRegionId | ''>('')
   const [datetime, setDatetime] = useState('')
@@ -46,8 +53,12 @@ export function EditLogPage() {
       try {
         setIsLoading(true)
         setError(null)
-        const data = await logService.getLogById(id)
-        setLog(data)
+        const [logData, attachmentsData] = await Promise.all([
+          logService.getLogById(id),
+          id ? attachmentService.getAttachmentsByLogId(id) : Promise.resolve([]),
+        ])
+        setLog(logData)
+        setAttachments(attachmentsData ?? [])
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load log')
       } finally {
@@ -67,6 +78,32 @@ export function EditLogPage() {
     setTags(parsed.tags.join(', '))
     setNotes(log.description ?? '')
   }, [log?.id])
+
+  const handleRemoveAttachment = async (attachmentId: string) => {
+    try {
+      await attachmentService.deleteAttachment(attachmentId)
+      setAttachments((prev) => prev.filter((a) => a.id !== attachmentId))
+    } catch {
+      setError('Failed to remove attachment')
+    }
+  }
+
+  const handleAddAttachments = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files ? Array.from(e.target.files) : []
+    e.target.value = ''
+    if (!id || !userId || files.length === 0) return
+    setUploading(true)
+    try {
+      for (const file of files) {
+        const created = await attachmentService.uploadLogAttachment(userId, id, file)
+        setAttachments((prev) => [...prev, created])
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to upload')
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -223,6 +260,52 @@ export function EditLogPage() {
             placeholder="Describe the symptom…"
             className="w-full glass-input resize-none"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-white/80 mb-1">
+            Attachments
+          </label>
+          {attachments.length > 0 && (
+            <ul className="mb-2 space-y-2">
+              {attachments.map((a) => {
+                const url = attachmentService.getAttachmentUrl(a)
+                return (
+                  <li
+                    key={a.id}
+                    className="flex items-center justify-between gap-2 rounded-lg border border-white/20 bg-white/5 px-3 py-2"
+                  >
+                    {a.type === 'image' ? (
+                      <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 min-w-0">
+                        <img src={url} alt="" className="h-10 w-10 rounded object-cover shrink-0" />
+                        <span className="text-sm text-white/90 truncate">{a.file_name || 'Image'}</span>
+                      </a>
+                    ) : (
+                      <a href={url} target="_blank" rel="noopener noreferrer" className="text-sm text-white/90 hover:text-white truncate min-w-0">
+                        {a.type === 'video' ? '🎬' : a.type === 'audio' ? '🎵' : '📄'} {a.file_name || a.type}
+                      </a>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveAttachment(a.id)}
+                      className="shrink-0 text-sm text-red-400 hover:text-red-300"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+          <input
+            type="file"
+            accept="image/*,video/*,audio/*,.pdf"
+            multiple
+            onChange={handleAddAttachments}
+            disabled={uploading}
+            className="w-full text-sm text-white/80 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-brand/80 file:text-white file:font-medium hover:file:bg-brand/90 disabled:opacity-50"
+          />
+          {uploading && <p className="mt-1 text-xs text-white/60">Uploading…</p>}
         </div>
 
         <div className="flex gap-3">
