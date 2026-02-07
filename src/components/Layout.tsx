@@ -14,7 +14,7 @@ export function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <header className="bg-white border-b border-slate-200 px-4 py-3">
+      {/* <header className="bg-white border-b border-slate-200 px-4 py-3">
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <Link to="/" className="font-semibold text-slate-800">
             MyHealth
@@ -49,8 +49,10 @@ export function Layout() {
             )}
           </nav>
         </div>
-      </header>
-      <main className="flex-1 max-w-6xl w-full mx-auto p-4">
+      </header> */}
+
+      {/* 👇 unconstrained content area */}
+      <main className="flex-1 w-full">
         <Outlet />
       </main>
     </div>
