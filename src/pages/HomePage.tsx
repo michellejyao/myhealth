@@ -1,12 +1,9 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BodyViewer } from '../features/body-viewer/BodyViewer'
+import BookModel from '../features/BookModel'
 import { useAppStore } from '../store'
-import { BODY_REGION_LABELS } from '../types'
 
-/**
- * PR-01: Body view; selecting a region opens New Log flow.
- */
 export function HomePage() {
   const selectedBodyRegion = useAppStore((s) => s.selectedBodyRegion)
   const setSelectedBodyRegion = useAppStore((s) => s.setSelectedBodyRegion)
@@ -20,12 +17,25 @@ export function HomePage() {
   }, [selectedBodyRegion, navigate, setSelectedBodyRegion])
 
   return (
-    <div>
-      <h1 className="text-xl font-semibold text-slate-800 mb-2">Body</h1>
-      <p className="text-slate-600 mb-4">
-        Click a body region to log a symptom. Selected region opens the New Log form.
-      </p>
-      <BodyViewer />
+    <div className="w-screen h-[calc(100vh-64px)] px-8 py-8 box-border">
+      {/* Shared background container */}
+      <div className="flex h-full bg-slate-100 rounded-lg">
+        
+        {/* Left section */}
+        <div className="w-1/2 flex items-center justify-center p-6">
+            <BookModel
+              projectName="Health Tracker"
+            />
+        </div>
+
+        {/* Optional divider */}
+        <div className="w-px bg-slate-200" />
+
+        {/* Right section */}
+        <div className="w-1/2 flex items-center justify-center p-6">
+          <BodyViewer />
+        </div>
+      </div>
     </div>
   )
 }
