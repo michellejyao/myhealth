@@ -119,6 +119,8 @@ export interface AppointmentEntry {
   diagnosis?: string
   doctor_notes?: string
   follow_up_required: boolean
+  location?: string
+  questions_to_ask?: string[]
   created_at: string
   updated_at: string
 }

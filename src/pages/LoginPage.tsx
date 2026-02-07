@@ -9,35 +9,32 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0f0f12]">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black">
       {/* Background: soft gradient + subtle grid */}
       <div
         className="absolute inset-0 opacity-[0.07]"
         style={{
           backgroundImage: `
-            linear-gradient(to right, #e4e4e7 1px, transparent 1px),
-            linear-gradient(to bottom, #e4e4e7 1px, transparent 1px)
+            linear-gradient(to right, #FFFFFF 1px, transparent 1px),
+            linear-gradient(to bottom, #FFFFFF 1px, transparent 1px)
           `,
           backgroundSize: '48px 48px',
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-emerald-600/10" />
-      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-amber-500/20 blur-3xl" />
-      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-emerald-600/20 blur-3xl" />
+      <div className="absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-accent/10" />
+      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-brand/20 blur-3xl" />
+      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-accent/20 blur-3xl" />
 
       <div className="relative z-10 text-center px-6 max-w-md">
-        <h1
-          className="text-5xl sm:text-6xl font-bold tracking-tight text-white mb-3"
-          style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
-        >
+        <h1 className="text-5xl sm:text-6xl font-bold tracking-tight text-white mb-3">
           Soma
         </h1>
-        <p className="text-zinc-400 text-lg mb-10 leading-relaxed">
+        <p className="text-white/70 text-lg mb-10 leading-relaxed">
           Your body. Your symptoms. One place to track and understand.
         </p>
         <button
           onClick={() => loginWithRedirect()}
-          className="group relative inline-flex items-center justify-center gap-2 bg-white text-zinc-900 px-8 py-3.5 rounded-xl font-semibold hover:bg-zinc-100 transition-all duration-200 shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/25 hover:-translate-y-0.5"
+          className="group relative inline-flex items-center justify-center gap-2 bg-accent text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-accent/90 transition-all duration-200 shadow-lg shadow-black/20 hover:shadow-xl hover:-translate-y-0.5"
         >
           Sign in with Auth0
           <svg

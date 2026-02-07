@@ -165,6 +165,25 @@ export const logService = {
     }
   },
 
+  /** Fetch logs for a specific body region. */
+  async getLogsByBodyRegion(userId: string, bodyRegion: string) {
+    if (!userId) throw new Error('userId is required')
+    const { data, error } = await supabase
+      .from('health_logs')
+      .select('*')
+      .eq('user_id', userId)
+      .order('date', { ascending: false })
+    if (error) throw new Error(`Failed to fetch logs: ${error.message}`)
+    const logs = data ?? []
+    return logs.filter(
+      (log) =>
+        log.body_region === bodyRegion ||
+        log.title === bodyRegion ||
+        (Array.isArray(log.body_parts) && log.body_parts.includes(bodyRegion)) ||
+        String(log.title || '').toLowerCase() === bodyRegion.replace(/_/g, ' ')
+    )
+  },
+
   // Get logs filtered by body parts
   async getLogsByBodyParts(userId: string, bodyParts: string[]) {
     if (!userId) {

@@ -9,9 +9,9 @@ interface BookSaveButtonProps {
 }
 
 const variantStyles = {
-  primary: 'bg-[#5c4a3a] text-[#f5f0e8] hover:bg-[#4a3c2f] border-[#4a3c2f]',
-  secondary: 'bg-[#e8e2d8] text-[#3d3629] hover:bg-[#ddd6c8] border-[#d4cfc4]',
-  danger: 'bg-[#8b3a3a] text-white hover:bg-[#732e2e] border-[#732e2e]',
+  primary: 'bg-accent text-white hover:bg-accent/90 border-accent',
+  secondary: 'bg-white/80 text-black hover:bg-white border-black/20',
+  danger: 'bg-red-600 text-white hover:bg-red-700 border-red-700',
 }
 
 export function BookSaveButton({

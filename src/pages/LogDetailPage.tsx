@@ -54,10 +54,10 @@ export function LogDetailPage() {
   if (error || !log) {
     return (
       <PageContainer>
-        <Link to="/logs" className="text-indigo-600 hover:text-indigo-700 font-medium mb-4 inline-block">
+        <Link to="/logs" className="text-brand hover:text-white font-medium mb-4 inline-block">
           ← Back to Logs
         </Link>
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <div className="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-3 rounded-lg">
           {error || 'Log not found'}
         </div>
       </PageContainer>
@@ -66,36 +66,36 @@ export function LogDetailPage() {
 
   return (
     <PageContainer>
-      <Link to="/logs" className="text-indigo-600 hover:text-indigo-700 font-medium mb-4 inline-block">
+      <Link to="/logs" className="text-brand hover:text-white font-medium mb-4 inline-block">
         ← Back to Logs
       </Link>
 
-      <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
+      <div className="glass-card p-6">
         <div className="flex flex-wrap justify-between items-start gap-3 mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">{log.title}</h1>
-            <p className="text-slate-600 mt-1">{log.description}</p>
+            <h1 className="text-2xl font-bold text-white font-display">{log.title}</h1>
+            <p className="text-white/70 mt-1">{log.description}</p>
           </div>
           <div className="flex items-center gap-2">
             <Link
               to={`/logs/${log.id}/edit`}
-              className="px-3 py-1.5 text-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200 rounded-lg font-medium transition-colors"
+              className="px-3 py-1.5 text-sm text-black bg-brand hover:bg-brand/90 rounded-lg font-medium transition-colors"
             >
               Edit
             </Link>
             <button
               onClick={handleDelete}
-              className="px-3 py-1.5 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors"
+              className="px-3 py-1.5 text-sm text-white bg-red-500/90 hover:bg-red-500 rounded-lg font-medium transition-colors"
             >
               Delete
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-200">
+        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/10">
           <div>
-            <p className="text-sm font-semibold text-slate-700">Date & Time</p>
-            <p className="text-slate-600">
+            <p className="text-sm font-semibold text-white/70">Date & Time</p>
+            <p className="text-white/90">
               {new Date(log.date).toLocaleDateString()} at{' '}
               {new Date(log.date).toLocaleTimeString()}
             </p>
@@ -103,20 +103,20 @@ export function LogDetailPage() {
 
           {log.severity && (
             <div>
-              <p className="text-sm font-semibold text-slate-700">Severity</p>
-              <p className="text-slate-600">{log.severity} / 10</p>
+              <p className="text-sm font-semibold text-white/70">Severity</p>
+              <p className="text-white/90">{log.severity} / 10</p>
             </div>
           )}
         </div>
 
         {log.body_parts && log.body_parts.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <p className="text-sm font-semibold text-slate-700 mb-2">Body Parts / Tags</p>
+          <div className="mt-4 pt-4 border-t border-white/10">
+            <p className="text-sm font-semibold text-white/70 mb-2">Body Parts / Tags</p>
             <div className="flex flex-wrap gap-2">
               {log.body_parts.map((part) => (
                 <span
                   key={part}
-                  className="inline-block text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded"
+                  className="inline-block text-sm bg-brand/20 text-brand px-3 py-1 rounded border border-brand/30"
                 >
                   {part}
                 </span>
@@ -125,7 +125,7 @@ export function LogDetailPage() {
           </div>
         )}
 
-        <div className="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-500">
+        <div className="mt-4 pt-4 border-t border-white/10 text-xs text-white/50">
           <p>Created: {new Date(log.created_at || '').toLocaleString()}</p>
           {log.updated_at && <p>Updated: {new Date(log.updated_at).toLocaleString()}</p>}
         </div>

@@ -23,16 +23,16 @@ export function BookAttachmentViewer({ attachment, onClose }: BookAttachmentView
   const icon = getPlaceholderIcon(attachment.type)
 
   return (
-    <div className="book-attachment-viewer bg-[#f5f0e8] border border-[#e0d9cc] rounded p-4">
+    <div className="book-attachment-viewer bg-white border border-black/10 rounded p-4">
       <div className="flex justify-between items-center mb-3">
-        <span className="text-sm font-medium text-[#3d3629]">
+        <span className="text-sm font-medium text-black">
           {attachment.file_name || `${icon} ${attachment.type}`}
         </span>
         {onClose && (
           <button
             type="button"
             onClick={onClose}
-            className="text-sm text-[#6b6358] hover:text-[#3d3629]"
+            className="text-sm text-black/70 hover:text-black"
           >
             Close
           </button>
@@ -42,10 +42,10 @@ export function BookAttachmentViewer({ attachment, onClose }: BookAttachmentView
         <img
           src={attachment.storage_path}
           alt={attachment.file_name || 'Attachment'}
-          className="max-w-full max-h-64 object-contain rounded border border-[#e0d9cc]"
+          className="max-w-full max-h-64 object-contain rounded border border-black/10"
         />
       ) : (
-        <div className="flex flex-col items-center justify-center py-8 text-[#6b6358] border border-dashed border-[#d4cfc4] rounded">
+        <div className="flex flex-col items-center justify-center py-8 text-black/70 border border-dashed border-black/20 rounded">
           <span className="text-4xl mb-2">{icon}</span>
           <p className="text-sm">{attachment.type}</p>
           {attachment.storage_path && (
@@ -53,7 +53,7 @@ export function BookAttachmentViewer({ attachment, onClose }: BookAttachmentView
               href={attachment.storage_path}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-[#5c4a3a] underline mt-2"
+              className="text-sm text-accent underline mt-2"
             >
               Open file
             </a>

@@ -45,9 +45,9 @@ export function AttachmentsPage() {
   return (
     <BookPageLayout title="Attachments">
       {loading ? (
-        <p className="text-sm text-[#6b6358]">Loading…</p>
+        <p className="text-sm text-black/70">Loading…</p>
       ) : attachments.length === 0 ? (
-        <p className="text-sm text-[#6b6358]">
+        <p className="text-sm text-black/70">
           No attachments yet. Add images or files from symptom logs or appointments.
         </p>
       ) : (
@@ -60,7 +60,7 @@ export function AttachmentsPage() {
                     key={a.id}
                     type="button"
                     onClick={() => setSelected(a)}
-                    className="aspect-square rounded border border-[#e0d9cc] bg-white/80 overflow-hidden hover:ring-2 ring-[#5c4a3a]"
+                    className="aspect-square rounded border border-black/10 bg-white/80 overflow-hidden hover:ring-2 ring-accent"
                   >
                     {a.storage_path ? (
                       <img
@@ -84,7 +84,7 @@ export function AttachmentsPage() {
                     key={a.id}
                     type="button"
                     onClick={() => setSelected(a)}
-                    className="p-3 rounded border border-[#e0d9cc] bg-white/80 text-sm hover:bg-[#faf8f5]"
+                    className="p-3 rounded border border-black/10 bg-white/80 text-sm hover:bg-white"
                   >
                     🎬 {a.file_name || 'Video'}
                   </button>
@@ -100,7 +100,7 @@ export function AttachmentsPage() {
                     key={a.id}
                     type="button"
                     onClick={() => setSelected(a)}
-                    className="p-3 rounded border border-[#e0d9cc] bg-white/80 text-sm hover:bg-[#faf8f5]"
+                    className="p-3 rounded border border-black/10 bg-white/80 text-sm hover:bg-white"
                   >
                     🎵 {a.file_name || 'Audio'}
                   </button>
@@ -116,7 +116,7 @@ export function AttachmentsPage() {
                     key={a.id}
                     type="button"
                     onClick={() => setSelected(a)}
-                    className="p-3 rounded border border-[#e0d9cc] bg-white/80 text-sm hover:bg-[#faf8f5]"
+                    className="p-3 rounded border border-black/10 bg-white/80 text-sm hover:bg-white"
                   >
                     📄 {a.file_name || 'Document'}
                   </button>

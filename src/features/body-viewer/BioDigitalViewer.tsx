@@ -160,23 +160,23 @@ export function BioDigitalViewer({
     <div className="relative w-full h-full min-h-[320px]">
       {/* Loading overlay */}
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-100 z-10">
+        <div className="absolute inset-0 flex items-center justify-center bg-navy/90 z-10">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm text-slate-600">Loading anatomy model...</p>
+            <div className="w-10 h-10 border-4 border-brand border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-white/80">Loading anatomy model...</p>
           </div>
         </div>
       )}
 
       {/* Error state */}
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-100 z-10">
+        <div className="absolute inset-0 flex items-center justify-center bg-navy/90 z-10">
           <div className="flex flex-col items-center gap-3 p-4 text-center">
             <svg className="w-12 h-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <p className="text-sm text-slate-600">{error}</p>
-            <p className="text-xs text-slate-400">Using fallback body model</p>
+            <p className="text-sm text-white/80">{error}</p>
+            <p className="text-xs text-white/60">Using fallback body model</p>
           </div>
         </div>
       )}
@@ -184,8 +184,8 @@ export function BioDigitalViewer({
       {/* Selected anatomy info */}
       {selectedAnatomy && !error && (
         <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm z-10">
-          <p className="text-xs text-slate-500">Selected:</p>
-          <p className="text-sm font-medium text-indigo-600">{selectedAnatomy}</p>
+          <p className="text-xs text-white/60">Selected:</p>
+          <p className="text-sm font-medium text-brand">{selectedAnatomy}</p>
         </div>
       )}
 
@@ -219,7 +219,7 @@ function buildWidgetUrl(modelId: string, developerKey?: string): string {
     // Enable selection
     'ui-tools': 'true',
     // Background
-    'background-color': 'f1f5f9', // Tailwind slate-100
+    'background-color': '#13346c', // navy
   })
 
   // Add developer key if provided
