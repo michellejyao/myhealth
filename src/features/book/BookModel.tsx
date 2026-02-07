@@ -327,7 +327,7 @@ const Book3D = ({
       )}
 
       {/* Bookmarks always rendered last for top z-order */}
-      <group position={[0, 0.3 * scale, 0.25 * scale]}>
+      <group position={[0, 0.17 * scale, 0.25 * scale]}>
         {bookmarks.map((bm, i) => (
           <Bookmark3D
             key={i}
@@ -338,9 +338,7 @@ const Book3D = ({
               1.95 * scale,
               0,
             ]}
-            notchDepth={0.18 * scale}
-            shadowColor="#d1b36a"
-            height={0.32 * scale}
+            height={0.25 * scale}
             onClick={() => handleBookmarkClick(bm.component)}
           />
         ))}
