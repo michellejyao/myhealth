@@ -1,5 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { PageContainer } from '../components/PageContainer'
 
 /**
  * PR-09: Health profile. Shows Auth0 user information.
@@ -16,8 +17,8 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="max-w-2xl">
-      <h1 className="text-2xl font-semibold text-slate-800 mb-6">Profile</h1>
+    <PageContainer className="max-w-4xl">
+      <h1 className="text-2xl font-bold text-slate-900 mb-6">Profile</h1>
 
       <div className="grid grid-cols-1 gap-6">
         {/* User Info Card */}
@@ -85,6 +86,6 @@ export function ProfilePage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   )
 }

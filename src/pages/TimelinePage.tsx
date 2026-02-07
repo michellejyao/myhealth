@@ -1,5 +1,6 @@
 import { useHealthLogs } from '../hooks/useHealthLogs'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { PageContainer } from '../components/PageContainer'
 
 /**
  * PR-06: Timeline view. Shows logs grouped by date with filtering.
@@ -27,8 +28,8 @@ export function TimelinePage() {
   )
 
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-slate-800 mb-6">Timeline</h1>
+    <PageContainer>
+      <h1 className="text-2xl font-bold text-slate-900 mb-6">Timeline</h1>
 
       {logs.length === 0 ? (
         <div className="text-center py-10 text-slate-600">No logs to display</div>
@@ -73,6 +74,6 @@ export function TimelinePage() {
           ))}
         </div>
       )}
-    </div>
+    </PageContainer>
   )
 }

@@ -14,20 +14,20 @@ export function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      {/* <header className="bg-white border-b border-slate-200 px-4 py-3">
-        <div className="flex items-center justify-between max-w-6xl mx-auto">
-          <Link to="/" className="font-semibold text-slate-800">
+      <header className="bg-white border-b border-slate-200 px-4 py-3 shadow-sm">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <Link to="/" className="text-xl font-bold text-indigo-600 hover:text-indigo-700">
             MyHealth
           </Link>
-          <nav className="flex gap-4 items-center">
+          <nav className="flex gap-6 items-center">
             {nav.map(({ to, label }) => (
               <Link
                 key={to}
                 to={to}
                 className={
                   location.pathname === to
-                    ? 'text-indigo-600 font-medium'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'text-indigo-600 font-semibold'
+                    : 'text-slate-600 hover:text-slate-900 font-medium'
                 }
               >
                 {label}
@@ -41,7 +41,7 @@ export function Layout() {
                 </div>
                 <button
                   onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-                  className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded"
+                  className="px-3 py-1.5 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium"
                 >
                   Logout
                 </button>
@@ -49,9 +49,8 @@ export function Layout() {
             )}
           </nav>
         </div>
-      </header> */}
+      </header>
 
-      {/* 👇 unconstrained content area */}
       <main className="flex-1 w-full">
         <Outlet />
       </main>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useHealthLogs } from '../hooks/useHealthLogs'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { PageContainer } from '../components/PageContainer'
 
 /**
  * PR-05: Log list from Supabase with filters by body region / tag.
@@ -13,14 +14,14 @@ export function LogsPage() {
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-semibold text-slate-800">Logs</h1>
+    <PageContainer>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-slate-900">Health Logs</h1>
         <Link
           to="/logs/new"
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors"
         >
-          New log
+          New Log
         </Link>
       </div>
 
@@ -31,11 +32,11 @@ export function LogsPage() {
       )}
 
       {logs.length === 0 ? (
-        <div className="text-center py-10">
+        <div className="text-center py-12">
           <p className="text-slate-600 mb-4">No health logs yet. Create your first log!</p>
           <Link
             to="/logs/new"
-            className="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            className="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors"
           >
             Create Log
           </Link>
@@ -99,6 +100,6 @@ export function LogsPage() {
           ))}
         </div>
       )}
-    </div>
+    </PageContainer>
   )
 }

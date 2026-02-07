@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { logService, HealthLog } from '../services/logService'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { PageContainer } from '../components/PageContainer'
 
 /**
  * PR-05: Log detail view. Loads log by id from Supabase and shows all fields.
@@ -52,32 +53,32 @@ export function LogDetailPage() {
 
   if (error || !log) {
     return (
-      <div>
-        <Link to="/logs" className="text-indigo-600 hover:underline mb-4 inline-block">
-          ← Back to logs
+      <PageContainer>
+        <Link to="/logs" className="text-indigo-600 hover:text-indigo-700 font-medium mb-4 inline-block">
+          ← Back to Logs
         </Link>
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           {error || 'Log not found'}
         </div>
-      </div>
+      </PageContainer>
     )
   }
 
   return (
-    <div>
-      <Link to="/logs" className="text-indigo-600 hover:underline mb-4 inline-block">
-        ← Back to logs
+    <PageContainer>
+      <Link to="/logs" className="text-indigo-600 hover:text-indigo-700 font-medium mb-4 inline-block">
+        ← Back to Logs
       </Link>
 
-      <div className="bg-white rounded-lg border border-slate-200 p-6">
+      <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">{log.title}</h1>
+            <h1 className="text-2xl font-bold text-slate-900">{log.title}</h1>
             <p className="text-slate-600 mt-1">{log.description}</p>
           </div>
           <button
             onClick={handleDelete}
-            className="text-red-600 hover:bg-red-50 px-3 py-1 rounded text-sm"
+            className="px-3 py-1.5 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors"
           >
             Delete
           </button>
@@ -121,6 +122,6 @@ export function LogDetailPage() {
           {log.updated_at && <p>Updated: {new Date(log.updated_at).toLocaleString()}</p>}
         </div>
       </div>
-    </div>
+    </PageContainer>
   )
 }

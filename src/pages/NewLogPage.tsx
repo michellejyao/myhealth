@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { BODY_REGIONS, BODY_REGION_LABELS, type BodyRegionId } from '../types'
 import { useHealthLogs } from '../hooks/useHealthLogs'
+import { PageContainer } from '../components/PageContainer'
 
 /**
  * PR-01/PR-03: New Log form. Region comes from body click or manual choice.
@@ -53,11 +54,11 @@ export function NewLogPage() {
   }
 
   return (
-    <div>
-      <Link to="/logs" className="text-indigo-600 hover:underline mb-4 inline-block">
-        ← Back to logs
+    <PageContainer>
+      <Link to="/logs" className="text-indigo-600 hover:text-indigo-700 font-medium mb-4 inline-block">
+        ← Back to Logs
       </Link>
-      <h1 className="text-xl font-semibold text-slate-800 mb-6">New Symptom Log</h1>
+      <h1 className="text-2xl font-bold text-slate-900 mb-6">New Symptom Log</h1>
 
       {error && (
         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -167,6 +168,6 @@ export function NewLogPage() {
           </button>
         </div>
       </form>
-    </div>
+    </PageContainer>
   )
 }
