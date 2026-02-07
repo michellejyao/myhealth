@@ -1,34 +1,25 @@
 /// <reference path="./deno.d.ts" />
 import { createClient } from "npm:@supabase/supabase-js@2"
+// @ts-ignore
+import { BackboardClient } from "npm:backboard-sdk"
 import { corsHeaders } from "../_shared/cors.ts"
 
-const GEMINI_MODEL = "gemini-2.5-flash"
-
-async function callGemini(
-  apiKey: string,
-  systemPrompt: string,
-  userInput: string
-): Promise<string | null> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ parts: [{ text: userInput }] }],
-      generationConfig: {
-        temperature: 0.3,
-        responseMimeType: "application/json",
-      },
-    }),
+// Backboard LLM call helper
+async function callBackboard(apiKey: string, systemPrompt: string, userInput: string): Promise<string | null> {
+  const client = new BackboardClient({ apiKey })
+  const assistant = await client.createAssistant({
+    name: "Pattern Analysis Assistant",
+    system_prompt: systemPrompt,
+    tools: []
   })
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`Gemini API error: ${res.status} ${err}`)
-  }
-  const data = await res.json()
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
-  return text ?? null
+  const thread = await client.createThread(assistant.assistantId)
+  const response = await client.addMessage(thread.threadId, {
+    content: userInput,
+    stream: false
+  })
+  // If tool calls are required, just return null for now (no tools)
+  if (response.status === 'REQUIRES_ACTION') return null
+  return response.content || null
 }
 
 // Types for health_logs (existing schema)
@@ -264,8 +255,7 @@ OUTPUT FORMAT REQUIRED (valid JSON only, no other text):
     {
       "title": "string",
       "reasoning_summary": "string",
-      "severity": "low" | "medium" | "high",
-      "confidence_score": 0-100
+      "severity": "low" | "medium" | "high"
     }
   ],
   "insights": ["string"],
@@ -303,7 +293,7 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    const geminiKey = Deno.env.get("GEMINI_API_KEY")
+    const backboardKey = Deno.env.get("BACKBOARD_API_KEY")
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
@@ -366,16 +356,15 @@ Deno.serve(async (req) => {
       summary: "Pattern analysis completed. No significant patterns identified in the available data.",
     }
 
-    if (geminiKey && logs.length > 0) {
+    if (backboardKey && logs.length > 0) {
       const { systemPrompt, userInput } = buildLLMPrompt(
         currentLog,
         recentLogs,
         profileData,
         metrics
       )
-
       try {
-        const content = await callGemini(geminiKey, systemPrompt, userInput)
+        const content = await callBackboard(backboardKey, systemPrompt, userInput)
         if (content) {
           const parsed = JSON.parse(content)
           llmOutput = {
@@ -389,7 +378,7 @@ Deno.serve(async (req) => {
           }
         }
       } catch (e) {
-        console.error("Gemini error:", e)
+        console.error("Backboard error:", e)
       }
     }
 

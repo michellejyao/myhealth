@@ -1,16 +1,75 @@
 import { useState, useMemo } from 'react'
+import { AnalysisResultsModal } from '../components/AnalysisResultsModal'
+import { createClient } from '@supabase/supabase-js'
+import { useAuth0 } from '@auth0/auth0-react'
 import { Link } from 'react-router-dom'
 import { useHealthLogs } from '../hooks/useHealthLogs'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { PageContainer } from '../components/PageContainer'
 
+export function LogsPage() {
+  const { user, isAuthenticated } = useAuth0()
 /**
  * PR-05: Log list from Supabase with filters by body region / tag.
  */
-export function LogsPage() {
   const { logs, isLoading, deleteLog, error } = useHealthLogs()
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'severity-high' | 'severity-low'>('newest')
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false)
+  const [analysisResult, setAnalysisResult] = useState<any>(null)
+  const [analysisLoading, setAnalysisLoading] = useState(false)
+  const [analysisError, setAnalysisError] = useState<string | null>(null)
+
+  // Call pattern-analysis function
+  const runAnalysis = async () => {
+    setAnalysisLoading(true)
+    setAnalysisError(null)
+    try {
+      if (!isAuthenticated || !user?.sub) {
+        throw new Error('You must be logged in to run analysis.')
+      }
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+      const fnUrl = `${supabaseUrl}/functions/v1/pattern-analysis`
+      const res = await fetch(fnUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+        body: JSON.stringify({ user_id: user.sub }),
+      })
+      const text = await res.text()
+      let data
+      try {
+        data = JSON.parse(text)
+      } catch {
+        throw new Error(`Non-JSON response: ${text}`)
+      }
+      if (!res.ok) {
+        throw new Error(data.error || `HTTP ${res.status}: ${text}`)
+      }
+      setAnalysisResult(data)
+      setModalOpen(true)
+
+      // Store result in analysis_results table
+      const supabase = createClient(supabaseUrl, supabaseKey)
+      await supabase.from('analysis_results').insert([
+        {
+          user_id: user.sub,
+          risk_score: data.risk_score,
+          summary: data.summary,
+          flags: data.flags,
+          insights: data.insights,
+        }
+      ])
+    } catch (e: any) {
+      setAnalysisError(e.message || 'Analysis failed')
+    } finally {
+      setAnalysisLoading(false)
+    }
+  }
 
   // Filter and sort logs
   const filteredAndSortedLogs = useMemo(() => {
@@ -57,13 +116,22 @@ export function LogsPage() {
   return (
     <PageContainer>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white font-display">Health Logs</h1>
-        <Link
-          to="/logs/new"
-          className="px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg font-medium transition-colors shadow-lg shadow-black/20"
-        >
-          New Log
-        </Link>
+        <h1 className="text-2xl font-bold text-slate-900">Health Logs</h1>
+        <div className="flex gap-3">
+          <Link
+            to="/logs/new"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors"
+          >
+            New Log
+          </Link>
+          <button
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors"
+            onClick={runAnalysis}
+            disabled={analysisLoading}
+          >
+            {analysisLoading ? 'Analyzing...' : 'Run Pattern Analysis'}
+          </button>
+        </div>
       </div>
 
       {/* Search and Sort Controls */}
@@ -96,6 +164,11 @@ export function LogsPage() {
       {error && (
         <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 text-red-300 rounded-lg">
           {error}
+        </div>
+      )}
+      {analysisError && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {analysisError}
         </div>
       )}
 
@@ -184,6 +257,11 @@ export function LogsPage() {
           ))}
         </div>
       )}
+      <AnalysisResultsModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        result={analysisResult}
+      />
     </PageContainer>
   )
 }

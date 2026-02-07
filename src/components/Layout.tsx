@@ -7,6 +7,7 @@ const nav = [
   { to: '/appointments', label: 'Appointments' },
   { to: '/family-history', label: 'Family History' },
   { to: '/profile', label: 'Profile' },
+  { to: '/analysis-results', label: 'Analysis Results' },
 ]
 
 export function Layout() {

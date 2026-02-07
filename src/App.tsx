@@ -10,6 +10,7 @@ import { EditLogPage } from './pages/EditLogPage'
 import { AppointmentsPage } from './pages/AppointmentsPage'
 import { FamilyHistoryPage } from './pages/FamilyHistoryPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { AnalysisResultsPage } from './pages/AnalysisResultsPage'
 import { LoadingSpinner } from './components/LoadingSpinner'
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="appointments" element={<AppointmentsPage />} />
         <Route path="family-history" element={<FamilyHistoryPage />} />
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="analysis-results" element={<AnalysisResultsPage />} />
       </Route>
     </Routes>
   )
