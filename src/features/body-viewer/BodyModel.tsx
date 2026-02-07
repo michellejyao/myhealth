@@ -135,7 +135,7 @@ export function BodyModel({
                     color={highlightedRegion === id ? "#818cf8" : "#ef4444"}
                     transparent
                     // Adujust this opacity for debugging clickable regions
-                    opacity={0}
+                    opacity={0.1}
                     depthWrite={false}
                     depthTest={false}
                   />
