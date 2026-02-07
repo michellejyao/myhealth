@@ -6,6 +6,7 @@ const nav = [
   { to: '/logs', label: 'Logs' },
   { to: '/timeline', label: 'Timeline' },
   { to: '/profile', label: 'Profile' },
+  { to: '/analysis-results', label: 'Analysis Results' },
 ]
 
 export function Layout() {

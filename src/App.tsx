@@ -9,6 +9,7 @@ import { NewLogPage } from './pages/NewLogPage'
 import { EditLogPage } from './pages/EditLogPage'
 import { TimelinePage } from './pages/TimelinePage'
 import { ProfilePage } from './pages/ProfilePage'
+import { AnalysisResultsPage } from './pages/AnalysisResultsPage'
 import { LoadingSpinner } from './components/LoadingSpinner'
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="logs/:id" element={<LogDetailPage />} />
         <Route path="timeline" element={<TimelinePage />} />
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="analysis-results" element={<AnalysisResultsPage />} />
       </Route>
     </Routes>
   )

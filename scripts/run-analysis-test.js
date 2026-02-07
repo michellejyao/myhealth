@@ -5,6 +5,7 @@
  * Uses VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY from .env or supabase/.env.local.
  */
 
+import './env.js'
 import { getSupabaseConfig } from './env.js'
 
 const TEST_USER_ID = 'test-user-analysis'
@@ -33,8 +34,6 @@ async function runAnalysis() {
   if (!res.ok) {
     throw new Error(data.error || `HTTP ${res.status}: ${text}`)
   }
-
-  console.log('Analysis result:')
   console.log(JSON.stringify(data, null, 2))
   return data
 }
