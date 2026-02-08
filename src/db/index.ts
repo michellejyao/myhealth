@@ -59,13 +59,13 @@ export async function getLogById(id: string): Promise<LogEntry | undefined> {
 
 /**
  * Profile (PR-09): single row.
+ * Note: This local DB cache is deprecated. Use healthProfileService with Supabase instead.
  */
 const DEFAULT_PROFILE: HealthProfile = {
-  id: 'default',
+  user_id: 'default',
   allergies: [],
-  familyHistory: '',
-  lifestyle: {},
-  updatedAt: new Date().toISOString(),
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
 }
 
 export async function getProfile(): Promise<HealthProfile> {

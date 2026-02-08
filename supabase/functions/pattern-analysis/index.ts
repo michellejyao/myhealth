@@ -7,19 +7,42 @@ import { corsHeaders } from "../_shared/cors.ts"
 // Backboard LLM call helper
 async function callBackboard(apiKey: string, systemPrompt: string, userInput: string): Promise<string | null> {
   const client = new BackboardClient({ apiKey })
-  const assistant = await client.createAssistant({
-    name: "Pattern Analysis Assistant",
-    system_prompt: systemPrompt,
-    tools: []
-  })
-  const thread = await client.createThread(assistant.assistantId)
-  const response = await client.addMessage(thread.threadId, {
-    content: userInput,
-    stream: false
-  })
-  // If tool calls are required, just return null for now (no tools)
-  if (response.status === 'REQUIRES_ACTION') return null
-  return response.content || null
+  let assistantId: string | null = null
+  let threadId: string | null = null
+
+  try {
+    const assistant = await client.createAssistant({
+      name: "Pattern Analysis Assistant",
+      system_prompt: systemPrompt,
+      tools: []
+    })
+    assistantId = assistant.assistantId
+
+    const thread = await client.createThread(assistantId)
+    threadId = thread.threadId
+
+    const response = await client.addMessage(threadId, {
+      content: userInput,
+      stream: false,
+      llm_provider: "openai",
+      model_name: "gpt-4o"
+    })
+
+    if (response.status === 'REQUIRES_ACTION') {
+      console.warn("Backboard: unexpected REQUIRES_ACTION status")
+      return null
+    }
+
+    return response.content || null
+  } finally {
+    // Clean up API resources to avoid orphaned assistants/threads
+    try {
+      if (threadId) await client.deleteThread(threadId)
+    } catch { /* best-effort cleanup */ }
+    try {
+      if (assistantId) await client.deleteAssistant(assistantId)
+    } catch { /* best-effort cleanup */ }
+  }
 }
 
 // Types for health_logs (existing schema)
@@ -356,6 +379,8 @@ Deno.serve(async (req) => {
       summary: "Pattern analysis completed. No significant patterns identified in the available data.",
     }
 
+    let backboardError: string | null = null
+
     if (backboardKey && logs.length > 0) {
       const { systemPrompt, userInput } = buildLLMPrompt(
         currentLog,
@@ -366,29 +391,55 @@ Deno.serve(async (req) => {
       try {
         const content = await callBackboard(backboardKey, systemPrompt, userInput)
         if (content) {
-          const parsed = JSON.parse(content)
-          llmOutput = {
-            flags: parsed.flags ?? [],
-            insights: parsed.insights ?? [],
-            anomaly_detected: parsed.anomaly_detected ?? anomalyDetected,
-            predictive_risk_assessment:
-              parsed.predictive_risk_assessment ?? llmOutput.predictive_risk_assessment,
-            family_history_connections: parsed.family_history_connections ?? [],
-            summary: parsed.summary ?? llmOutput.summary,
+          // Strip markdown code fences if the LLM wraps its JSON response
+          const cleaned = content.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+          let parsed
+          try {
+            parsed = JSON.parse(cleaned)
+          } catch (parseErr) {
+            console.error("Backboard JSON parse error:", parseErr, "\nRaw content:", content)
+            backboardError = "AI returned invalid response format"
+            parsed = null
           }
+          if (parsed) {
+            llmOutput = {
+              flags: Array.isArray(parsed.flags) ? parsed.flags : [],
+              insights: Array.isArray(parsed.insights) ? parsed.insights : [],
+              anomaly_detected: typeof parsed.anomaly_detected === 'boolean' ? parsed.anomaly_detected : anomalyDetected,
+              predictive_risk_assessment:
+                parsed.predictive_risk_assessment ?? llmOutput.predictive_risk_assessment,
+              family_history_connections: Array.isArray(parsed.family_history_connections) ? parsed.family_history_connections : [],
+              summary: typeof parsed.summary === 'string' ? parsed.summary : llmOutput.summary,
+            }
+          }
+        } else {
+          backboardError = "AI returned empty response"
         }
       } catch (e) {
         console.error("Backboard error:", e)
+        backboardError = e instanceof Error ? e.message : "AI analysis failed"
       }
+    } else if (!backboardKey) {
+      backboardError = "AI analysis not configured (missing API key)"
     }
 
-    const llmRiskScore = llmRiskToNumber(
-      llmOutput.predictive_risk_assessment?.risk_level ?? "low"
-    )
-    const final_risk_score = Math.round(
-      metrics.risk_score * 0.7 + llmRiskScore * 0.3
-    )
-    const clampedRisk = Math.max(0, Math.min(100, final_risk_score))
+    // If no patterns found (no flags, no insights, no anomaly, no family connections), return 0 risk
+    const hasPatterns = 
+      llmOutput.flags.length > 0 ||
+      llmOutput.insights.length > 0 ||
+      llmOutput.anomaly_detected ||
+      llmOutput.family_history_connections.length > 0
+
+    let clampedRisk = 0
+    if (hasPatterns) {
+      const llmRiskScore = llmRiskToNumber(
+        llmOutput.predictive_risk_assessment?.risk_level ?? "low"
+      )
+      const final_risk_score = Math.round(
+        metrics.risk_score * 0.7 + llmRiskScore * 0.3
+      )
+      clampedRisk = Math.max(0, Math.min(100, final_risk_score))
+    }
 
     const logIdForFlags = currentLog?.id ?? null
 
@@ -422,6 +473,7 @@ Deno.serve(async (req) => {
       summary: llmOutput.summary,
       anomaly_detected: llmOutput.anomaly_detected,
       family_history_connections: llmOutput.family_history_connections,
+      ...(backboardError ? { ai_warning: backboardError } : {}),
     }
 
     return new Response(JSON.stringify(response), {

@@ -4,6 +4,7 @@ import { appointmentService } from '../services/appointmentService'
 import type { AppointmentEntry, Specialty } from '../types'
 import { PageContainer } from '../components/PageContainer'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { AppointmentSummary } from '../components/AppointmentSummary'
 
 const SPECIALTY_LABELS: Record<Specialty, string> = {
   'general practitioner': 'General Practitioner',
@@ -71,13 +72,20 @@ export function AppointmentsPage() {
 
   return (
     <PageContainer>
-      <h1 className="text-2xl font-bold text-white mb-6 font-display">Appointments</h1>
-      <p className="text-white/70 mb-6">
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 font-display">Appointments</h1>
+      <p className="text-slate-600 dark:text-white/70 mb-6">
         View your upcoming appointments and add questions to ask your doctor.
       </p>
 
+      {/* Appointment Summary Section */}
+      <div className="mb-8">
+        <AppointmentSummary />
+      </div>
+
+      {/* Upcoming Appointments */}
+      <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Upcoming Appointments</h2>
       {futureAppointments.length === 0 ? (
-        <div className="glass-card p-8 text-center text-white/70">
+        <div className="glass-card p-8 text-center text-slate-600 dark:text-white/70">
           No upcoming appointments. Add appointments in the My Health Book → Appointments section.
         </div>
       ) : (
@@ -90,10 +98,10 @@ export function AppointmentsPage() {
               <button
                 type="button"
                 onClick={() => setExpandedId((id) => (id === apt.id ? null : apt.id))}
-                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
+                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
               >
                 <div>
-                  <p className="font-semibold text-white/90">
+                  <p className="font-semibold text-slate-800 dark:text-white/90">
                     {new Date(apt.appointment_date).toLocaleDateString('en-US', {
                       weekday: 'long',
                       month: 'long',
@@ -101,7 +109,7 @@ export function AppointmentsPage() {
                       year: 'numeric',
                     })}
                   </p>
-                  <p className="text-white/70 text-sm mt-0.5">
+                  <p className="text-slate-600 dark:text-white/70 text-sm mt-0.5">
                     {new Date(apt.appointment_date).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -110,31 +118,31 @@ export function AppointmentsPage() {
                     {apt.doctor_name} ({SPECIALTY_LABELS[apt.specialty]})
                   </p>
                 </div>
-                <span className="text-white/50 text-xl">{expandedId === apt.id ? '−' : '+'}</span>
+                <span className="text-slate-500 dark:text-white/50 text-xl">{expandedId === apt.id ? '−' : '+'}</span>
               </button>
 
               {expandedId === apt.id && (
-                <div className="px-6 pb-6 pt-0 border-t border-white/10 space-y-4">
+                <div className="px-6 pb-6 pt-0 border-t border-slate-100 dark:border-white/10 space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                     <div>
-                      <p className="text-xs font-medium text-white/50 uppercase tracking-wide">What it&apos;s for</p>
-                      <p className="text-white/90 mt-1">{apt.reason_for_visit || '—'}</p>
+                      <p className="text-xs font-medium text-slate-500 dark:text-white/50 uppercase tracking-wide">What it&apos;s for</p>
+                      <p className="text-slate-800 dark:text-white/90 mt-1">{apt.reason_for_visit || '—'}</p>
                     </div>
                     {apt.location && (
                       <div>
-                        <p className="text-xs font-medium text-white/50 uppercase tracking-wide">Location</p>
-                        <p className="text-white/90 mt-1">{apt.location}</p>
+                        <p className="text-xs font-medium text-slate-500 dark:text-white/50 uppercase tracking-wide">Location</p>
+                        <p className="text-slate-800 dark:text-white/90 mt-1">{apt.location}</p>
                       </div>
                     )}
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium text-white/80 mb-2">Questions to ask your doctor</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-white/80 mb-2">Questions to ask your doctor</p>
                     <ul className="space-y-2 mb-3">
                       {(apt.questions_to_ask ?? []).map((q, i) => (
                         <li
                           key={i}
-                          className="flex items-center justify-between gap-2 py-2 px-3 bg-white/5 rounded-lg text-white/90 border border-white/10"
+                          className="flex items-center justify-between gap-2 py-2 px-3 bg-slate-50 dark:bg-white/5 rounded-lg text-slate-800 dark:text-white/90 border border-slate-100 dark:border-white/10"
                         >
                           <span>{q}</span>
                           <button
@@ -147,7 +155,7 @@ export function AppointmentsPage() {
                         </li>
                       ))}
                       {(!apt.questions_to_ask || apt.questions_to_ask.length === 0) && (
-                        <li className="text-white/50 text-sm py-2">No questions saved yet.</li>
+                        <li className="text-slate-500 dark:text-white/50 text-sm py-2">No questions saved yet.</li>
                       )}
                     </ul>
                     <div className="flex gap-2">

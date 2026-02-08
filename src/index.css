@@ -7,7 +7,15 @@ body {
   font-family: 'Nunito', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #f8fafc;
+  color: #1e293b;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body,
+html.dark body {
   background: #000000;
+  color: #e2e8f0;
 }
 
 #root {
@@ -15,10 +23,27 @@ body {
 }
 
 @layer components {
-  .glass-card {
+  /* Dark mode glass styles */
+  .dark .glass-card {
     @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl shadow-black/5;
   }
-  .glass-input {
+  .dark .glass-input {
     @apply bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-white/50 focus:border-brand/50 focus:ring-1 focus:ring-brand/30 focus:bg-white/10 transition-colors;
+  }
+  
+  /* Light mode glass styles */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-xl border border-slate-200 rounded-xl shadow-lg shadow-slate-200/50;
+  }
+  .glass-input {
+    @apply bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-brand focus:ring-1 focus:ring-brand/30 focus:bg-white transition-colors;
+  }
+
+  /* Select dropdown text fix for light mode */
+  .glass-input option {
+    @apply bg-white text-slate-900;
+  }
+  .dark .glass-input option {
+    @apply bg-slate-900 text-white;
   }
 }

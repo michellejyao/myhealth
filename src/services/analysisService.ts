@@ -39,14 +39,33 @@ export const analysisService = {
   /**
    * Invoke the pattern analysis Edge Function.
    * Triggers when: new log created, log edited, or user requests analysis.
+   * Uses direct fetch to get detailed error info from the edge function.
    */
   async analyzeLogs(userId: string, logId?: string): Promise<AnalysisResult> {
-    const { data, error } = await supabase.functions.invoke('pattern-analysis', {
-      body: { user_id: userId, log_id: logId ?? undefined },
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+    const fnUrl = `${supabaseUrl}/functions/v1/pattern-analysis`
+
+    const res = await fetch(fnUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
+      },
+      body: JSON.stringify({ user_id: userId, log_id: logId ?? undefined }),
     })
 
-    if (error) {
-      throw new Error(`Analysis failed: ${error.message}`)
+    let data: any
+    const text = await res.text()
+    try {
+      data = JSON.parse(text)
+    } catch {
+      throw new Error(`Analysis failed (HTTP ${res.status}): ${text}`)
+    }
+
+    if (!res.ok) {
+      throw new Error(data?.error || `Analysis failed (HTTP ${res.status}): ${text}`)
     }
 
     if (data?.error) {

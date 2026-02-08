@@ -29,15 +29,15 @@ export function TimelinePage() {
 
   return (
     <PageContainer>
-      <h1 className="text-2xl font-bold text-white mb-6 font-display">Timeline</h1>
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 font-display">Timeline</h1>
 
       {logs.length === 0 ? (
-        <div className="text-center py-10 text-white/70">No logs to display</div>
+        <div className="text-center py-10 text-slate-600 dark:text-white/70">No logs to display</div>
       ) : (
         <div className="space-y-8">
           {sortedDates.map((date) => (
             <div key={date}>
-              <h2 className="text-lg font-semibold text-white/90 mb-3 sticky top-0 bg-black/80 backdrop-blur py-2 z-10">
+              <h2 className="text-lg font-semibold text-slate-800 dark:text-white/90 mb-3 sticky top-0 bg-white/80 dark:bg-black/80 backdrop-blur py-2 z-10">
                 {new Date(date).toLocaleDateString('en-US', {
                   weekday: 'long',
                   year: 'numeric',
@@ -52,17 +52,17 @@ export function TimelinePage() {
                     <div className="glass-card p-4">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <p className="font-semibold text-white/90">{log.title}</p>
+                          <p className="font-semibold text-slate-800 dark:text-white/90">{log.title}</p>
                           {log.description && (
-                            <p className="text-sm text-white/70 mt-1">{log.description}</p>
+                            <p className="text-sm text-slate-600 dark:text-white/70 mt-1">{log.description}</p>
                           )}
                           {log.severity && (
-                            <p className="text-sm text-white/70 mt-2">
+                            <p className="text-sm text-slate-600 dark:text-white/70 mt-2">
                               Severity: <span className="text-red-400 font-medium">{log.severity}/10</span>
                             </p>
                           )}
                         </div>
-                        <p className="text-xs text-white/50 whitespace-nowrap ml-4">
+                        <p className="text-xs text-slate-500 dark:text-white/50 whitespace-nowrap ml-4">
                           {new Date(log.date).toLocaleTimeString()}
                         </p>
                       </div>

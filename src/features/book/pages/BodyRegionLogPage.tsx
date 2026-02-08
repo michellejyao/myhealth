@@ -15,7 +15,6 @@ import type { BodyRegionId, PainType } from '../../../types'
 import type { HealthLog } from '../../../services/logService'
 import { logService } from '../../../services/logService'
 import { analysisService } from '../../../services/analysisService'
-import { attachmentService } from '../../../services/attachmentService'
 
 const inputClass =
   'w-full rounded border border-black/20 bg-white px-3 py-2 text-black text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent'
@@ -121,13 +120,6 @@ export function BodyRegionLogPage({
             await analysisService.analyzeLogs(userId, created.id)
           } catch {
             // Non-blocking
-          }
-          for (const file of attachmentFiles) {
-            try {
-              await attachmentService.uploadLogAttachment(userId, created.id, file)
-            } catch {
-              // Non-blocking
-            }
           }
         }
       }
@@ -288,7 +280,7 @@ export function BodyRegionLogPage({
             />
             {attachmentFiles.length > 0 && (
               <p className="mt-1 text-xs text-black/70">
-                {attachmentFiles.length} file(s) selected — will be saved with this log.
+                {attachmentFiles.length} file(s) selected (storage integration can be added)
               </p>
             )}
           </BookFormField>

@@ -1,6 +1,6 @@
 import { useRef, useMemo, useState } from "react";
 import type { ThreeEvent } from "@react-three/fiber";
-import { type Group, Mesh, Box3, Vector3 } from "three";
+import { type Group, Mesh, MeshStandardMaterial, Box3, Vector3, Color, BufferAttribute, MathUtils } from "three";
 import { useGLTF, useCursor } from "@react-three/drei";
 import type { BodyRegionId } from "../../types";
 import { BODY_REGIONS, type BodyRegionId as BodyRegion } from "../../types";
@@ -21,7 +21,7 @@ const PROXY_REGIONS: Array<{
   { id: "chest", position: [67, 0, 0.1], radius: 0.2, height: 0.2, type: "capsule" },
   { id: "abdomen", position: [55, 0, 0.02], radius: 0.15, height: 0.2, type: "capsule" },
   { id: "pelvis", position: [47, 0, 0.02], radius: 0.07, height: 0.33, type: "capsule" },
-  { id: "back", position: [67, 0, -0.5], radius: 0.2, height: 0.2, type: "capsule" },
+  { id: "back", position: [67, 0, -1], radius: 0.2, height: 0.2, type: "capsule" },
   { id: "left_shoulder", position: [69, 10, 0.02], radius: 0.09, type: "sphere" },
   { id: "left_upper_arm", position: [64, 14, 0.02], rotation: [0, 0, Math.PI / 4], radius: 0.055, height: 0.22, type: "capsule" },
   { id: "left_forearm", position: [58, 21, 3], rotation: [0, 0, Math.PI / 5], radius: 0.045, height: 0.25, type: "capsule" },
@@ -46,6 +46,9 @@ interface BodyModelProps {
 
   proxyScale?: number;        // default 50
   proxyZOffset?: number;      // default 0.5
+  heatmapRegionCounts?: Partial<Record<BodyRegionId, number>>;
+  highlightedHeatmapRegion?: BodyRegionId | null;
+  lowIntensityBlend?: number; // 0=neutral, 1=green
 }
 
 useGLTF.preload(MODEL_PATH);
@@ -57,33 +60,234 @@ export function BodyModel({
   rotation,
   proxyScale = 50,
   proxyZOffset = 0.5,
+  heatmapRegionCounts,
+  highlightedHeatmapRegion,
+  lowIntensityBlend = 0,
 }: BodyModelProps) {
   const groupRef = useRef<Group>(null);
   const [hovered, setHovered] = useState(false);
   useCursor(hovered);
+  
+  // Track pointer down position to prevent accidental clicks
+  const pointerDownRef = useRef<{ region: BodyRegionId | null; x: number; y: number } | null>(null);
 
   const { scene } = useGLTF(MODEL_PATH) as { scene: Group };
 
   const regionSet = useMemo(() => new Set(BODY_REGIONS), []);
+  const maxHeatmapCount = useMemo(() => {
+    if (!heatmapRegionCounts) return 0;
+    let max = 0;
+    for (const count of Object.values(heatmapRegionCounts)) {
+      if (typeof count === "number" && count > max) max = count;
+    }
+    return max;
+  }, [heatmapRegionCounts]);
+
+  const heatColor = (t: number) => {
+    const start = new Color("#f59e0b"); // yellow
+    const end = new Color("#ef4444");   // red
+    return start.clone().lerp(end, t);
+  };
+
+  const HEATMAP_RADIUS = 0.25;
+
+  const applyVertexHeatmap = (
+    mesh: Mesh,
+    centers: Array<{ pos: Vector3; weight: number; radius?: number }>,
+    boxMin: Vector3,
+    boxSize: Vector3,
+    lowColor: Color
+  ) => {
+    const geo = mesh.geometry;
+    if (!geo) return;
+    const pos = geo.getAttribute("position");
+    if (!pos) return;
+
+    let colorAttr = geo.getAttribute("color") as BufferAttribute | null;
+    if (!colorAttr) {
+      const colors = new Float32Array(pos.count * 3);
+      colorAttr = new BufferAttribute(colors, 3);
+      geo.setAttribute("color", colorAttr);
+    }
+
+    const v = new Vector3();
+    const n = new Vector3();
+    for (let i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos as BufferAttribute, i);
+      v.applyMatrix4(mesh.matrixWorld);
+      n.set(
+        boxSize.x > 0 ? (v.x - boxMin.x) / boxSize.x : 0.5,
+        boxSize.y > 0 ? (v.y - boxMin.y) / boxSize.y : 0.5,
+        boxSize.z > 0 ? (v.z - boxMin.z) / boxSize.z : 0.5
+      );
+
+      let intensity = 0;
+      for (const center of centers) {
+        const radius = center.radius ?? HEATMAP_RADIUS;
+        const d = n.distanceTo(center.pos);
+        const inner = radius * 0.6; // core radius (no fade)
+        let smooth = 0;
+        if (d <= inner) {
+          smooth = 1;
+        } else if (d < radius) {
+          const edgeT = (radius - d) / (radius - inner);
+          smooth = edgeT * edgeT * (3 - 2 * edgeT); // smoothstep only on edge
+        }
+        intensity = Math.max(intensity, smooth * center.weight);
+      }
+
+      if (intensity <= 0) {
+        colorAttr.setXYZ(i, lowColor.r, lowColor.g, lowColor.b);
+      } else { 
+        const clamped = MathUtils.clamp(intensity, 0, 1);
+        const heat = heatColor(clamped);
+        const mix = Math.pow(clamped, 1.4); // less fade at low intensity
+        const c = lowColor.clone().lerp(heat, mix);
+        colorAttr.setXYZ(i, c.r, c.g, c.b);
+      }
+    }
+
+    colorAttr.needsUpdate = true;
+
+    if (Array.isArray(mesh.material)) {
+      mesh.material = mesh.material.map((mat) => {
+        const next = mat.clone();
+        next.vertexColors = true;
+        next.needsUpdate = true;
+        return next;
+      });
+    } else if (mesh.material) {
+      const next = mesh.material.clone();
+      next.vertexColors = true;
+      next.needsUpdate = true;
+      mesh.material = next;
+    }
+  };
 
   // Visual scene: clone + disable raycast so proxies get clicks
   const displayScene = useMemo(() => {
     const clone = scene.clone(true);
+    clone.updateMatrixWorld(true);
+
+    const modelBox = new Box3().setFromObject(clone);
+    const boxSize = new Vector3();
+    const boxMin = modelBox.min.clone();
+    modelBox.getSize(boxSize);
+
+    const heatCenters: Array<{ pos: Vector3; weight: number; radius?: number }> = [];
+    const normalizedCenters: Partial<Record<BodyRegionId, Vector3>> = {
+      head: new Vector3(0.5, 1.1, 0.5),
+      neck: new Vector3(0.5, 0.75, 0.5),
+      chest: new Vector3(0.5, 0.8, 0.5),
+      back: new Vector3(0.5, 0.75, 0),
+      abdomen: new Vector3(0.5, 0.6, 0.5),
+      left_shoulder: new Vector3(0.25, 0.65, 0.5),
+      left_upper_arm: new Vector3(0.22, 0.58, 0.5),
+      left_forearm: new Vector3(0.2, 0.5, 0.5),
+      left_hand: new Vector3(0.18, 0.45, 0.5),
+      right_shoulder: new Vector3(0.75, 0.65, 0.5),
+      right_upper_arm: new Vector3(0.78, 0.58, 0.5),
+      right_forearm: new Vector3(0.8, 0.5, 0.5),
+      right_hand: new Vector3(0.82, 0.45, 0.5),
+      left_upper_leg: new Vector3(0.45, 0.28, 0.5),
+      left_lower_leg: new Vector3(0.45, 0.16, 0.5),
+      left_foot: new Vector3(0.45, 0.05, 0.5),
+      right_upper_leg: new Vector3(0.55, 0.28, 0.5),
+      right_lower_leg: new Vector3(0.75, 0.5, 0.2),
+      right_foot: new Vector3(0.55, 0.05, 0.5),
+    };
+
+    if (heatmapRegionCounts) {
+      const denom = maxHeatmapCount > 0 ? maxHeatmapCount : 1;
+      for (const [region, count] of Object.entries(heatmapRegionCounts)) {
+        if (!count) continue;
+        const pos = normalizedCenters[region as BodyRegionId];
+        if (pos) {
+          heatCenters.push({
+            pos,
+            weight: MathUtils.clamp(count / denom, 0, 1),
+            radius:
+              region === "back"
+                ? HEATMAP_RADIUS * 0.5
+                : region === "chest"
+                  ? HEATMAP_RADIUS * 0.5
+                : region === "abdomen"
+                  ? HEATMAP_RADIUS * 0.6
+                  : HEATMAP_RADIUS,
+          });
+        }
+      }
+    }
+    if (highlightedHeatmapRegion) {
+      const pos = normalizedCenters[highlightedHeatmapRegion];
+      if (pos) {
+        heatCenters.push({
+          pos,
+          weight: 1,
+          radius:
+            highlightedHeatmapRegion === "back"
+              ? HEATMAP_RADIUS * 0.5
+              : highlightedHeatmapRegion === "chest"
+                ? HEATMAP_RADIUS * 0.4
+              : highlightedHeatmapRegion === "abdomen"
+                ? HEATMAP_RADIUS * 0.6
+                : HEATMAP_RADIUS,
+        });
+      }
+    }
+
     clone.traverse((child) => {
       if (child instanceof Mesh) {
         child.raycast = () => undefined;
         child.castShadow = true;
         child.receiveShadow = true;
         child.frustumCulled = false;
+
+        if (heatCenters.length > 0) {
+          const baseColor = new Color("#ffffff");
+          const material = Array.isArray(child.material) ? child.material[0] : child.material;
+          if (material && (material as MeshStandardMaterial).color) {
+            baseColor.copy((material as MeshStandardMaterial).color);
+          }
+          const lowColor = baseColor.clone().lerp(new Color("#22c55e"), lowIntensityBlend);
+          applyVertexHeatmap(child, heatCenters, boxMin, boxSize, lowColor);
+        }
       }
     });
     return clone;
-  }, [scene]);
+  }, [scene, heatmapRegionCounts, highlightedHeatmapRegion, maxHeatmapCount, lowIntensityBlend]);
 
   const onPointerDown = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
     const region = (e.object as Mesh).userData?.region as BodyRegionId | undefined;
-    if (region && regionSet.has(region)) onSelectRegion(region);
+    if (region && regionSet.has(region)) {
+      // Store the pointer down position and region
+      pointerDownRef.current = { region, x: e.clientX, y: e.clientY };
+    }
+  };
+
+  const onPointerUp = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    const region = (e.object as Mesh).userData?.region as BodyRegionId | undefined;
+    
+    // Only trigger if we pressed down and up on the same region at approximately the same position
+    if (
+      region &&
+      pointerDownRef.current &&
+      pointerDownRef.current.region === region &&
+      regionSet.has(region)
+    ) {
+      // Check if pointer moved less than 5 pixels (prevents drag/accidental clicks)
+      const deltaX = Math.abs(e.clientX - pointerDownRef.current.x);
+      const deltaY = Math.abs(e.clientY - pointerDownRef.current.y);
+      
+      if (deltaX < 5 && deltaY < 5) {
+        onSelectRegion(region);
+      }
+    }
+    
+    // Clear the pointer down reference
+    pointerDownRef.current = null;
   };
 
   const { centeredPosition, uniformScale } = useMemo(() => {
@@ -121,6 +325,7 @@ export function BodyModel({
                   userData={{ region: id }}
                   renderOrder={1}
                   onPointerDown={onPointerDown}
+                  onPointerUp={onPointerUp}
                   onPointerOver={() => setHovered(true)}
                   onPointerOut={() => setHovered(false)}
                 >
@@ -135,7 +340,7 @@ export function BodyModel({
                     color={highlightedRegion === id ? "#818cf8" : "#ef4444"}
                     transparent
                     // Adujust this opacity for debugging clickable regions
-                    opacity={0.1}
+                    opacity={0}
                     depthWrite={false}
                     depthTest={false}
                   />

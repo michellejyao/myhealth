@@ -156,19 +156,32 @@ export interface LogAttachment {
 
 /**
  * Health profile baseline (PR-09).
+ * Matches health_profile table schema in Supabase.
  */
+export type UnitSystem = 'metric' | 'imperial'
+
+export type BloodType = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | 'Unknown'
+
 export interface HealthProfile {
-  id: 'default'
-  allergies: string[]
-  heightCm?: number
-  weightKg?: number
-  familyHistory: string
-  lifestyle: {
-    sleepHours?: number
-    dietNotes?: string
-    exerciseNotes?: string
-  }
-  updatedAt: string
+  user_id: string
+  allergies?: string[]
+  height?: number
+  weight?: number
+  height_unit?: UnitSystem
+  weight_unit?: UnitSystem
+  blood_type?: BloodType
+  date_of_birth?: string // ISO date string
+  medications?: string[]
+  emergency_contact_name?: string
+  emergency_contact_phone?: string
+  primary_physician?: string
+  chronic_conditions?: string[]
+  family_history?: string[] // Deprecated - use family_history table
+  lifestyle_sleep_hours?: number
+  lifestyle_activity_level?: string
+  lifestyle_diet_type?: string
+  created_at?: string
+  updated_at?: string
 }
 
 /**

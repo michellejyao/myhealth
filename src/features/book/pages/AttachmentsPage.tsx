@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { BookPageLayout, BookSection } from '../components'
 import { BookAttachmentViewer } from '../components/BookAttachmentViewer'
-import { attachmentService } from '../../../services/attachmentService'
 import { supabase } from '../../../lib/supabase'
 import type { AttachmentEntry } from '../../../types'
 
@@ -63,11 +62,15 @@ export function AttachmentsPage() {
                     onClick={() => setSelected(a)}
                     className="aspect-square rounded border border-black/10 bg-white/80 overflow-hidden hover:ring-2 ring-accent"
                   >
-                    <img
-                      src={attachmentService.getAttachmentUrl(a)}
-                      alt={a.file_name || 'Image'}
-                      className="w-full h-full object-cover"
-                    />
+                    {a.storage_path ? (
+                      <img
+                        src={a.storage_path}
+                        alt={a.file_name || 'Image'}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="flex items-center justify-center h-full text-2xl">🖼️</span>
+                    )}
                   </button>
                 ))}
               </div>

@@ -11,7 +11,7 @@ import { familyHistoryService } from '../services/familyHistoryService'
 import { PageContainer } from '../components/PageContainer'
 
 const inputClass =
-  'w-full rounded border border-white/20 bg-white/10 px-3 py-2 text-white text-sm placeholder-white/40 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand'
+  'w-full rounded border border-slate-200 dark:border-white/20 bg-white dark:bg-white/10 px-3 py-2 text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-white/40 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand'
 
 export function FamilyHistoryPage() {
   const { user } = useAuth0()
@@ -71,13 +71,13 @@ export function FamilyHistoryPage() {
 
   return (
     <PageContainer>
-      <h1 className="text-2xl font-bold text-white mb-2 font-display">Family History</h1>
-      <p className="text-white/70 mb-6">
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 font-display">Family History</h1>
+      <p className="text-slate-600 dark:text-white/70 mb-6">
         Add health conditions that your relatives have. Records are saved to your family history.
       </p>
 
       <div className="glass-card p-6 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Add condition</h2>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Add condition</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div className="p-2 rounded bg-red-500/20 text-red-200 text-sm">
@@ -86,7 +86,7 @@ export function FamilyHistoryPage() {
           )}
 
           <div>
-            <label htmlFor="condition_name" className="block text-sm font-medium text-white/80 mb-1">
+            <label htmlFor="condition_name" className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-1">
               Condition <span className="text-red-400">*</span>
             </label>
             <input
@@ -101,7 +101,7 @@ export function FamilyHistoryPage() {
           </div>
 
           <div>
-            <label htmlFor="relationship" className="block text-sm font-medium text-white/80 mb-1">
+            <label htmlFor="relationship" className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-1">
               Relationship
             </label>
             <select
@@ -119,8 +119,8 @@ export function FamilyHistoryPage() {
           </div>
 
           <div>
-            <label htmlFor="age_of_onset" className="block text-sm font-medium text-white/80 mb-1">
-              Age of onset <span className="text-white/50">(optional)</span>
+            <label htmlFor="age_of_onset" className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-1">
+              Age of onset <span className="text-slate-500 dark:text-white/60">(optional)</span>
             </label>
             <input
               id="age_of_onset"
@@ -135,7 +135,7 @@ export function FamilyHistoryPage() {
           </div>
 
           <div>
-            <label htmlFor="confidence_level" className="block text-sm font-medium text-white/80 mb-1">
+            <label htmlFor="confidence_level" className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-1">
               Confidence
             </label>
             <select
@@ -153,8 +153,8 @@ export function FamilyHistoryPage() {
           </div>
 
           <div>
-            <label htmlFor="notes" className="block text-sm font-medium text-white/80 mb-1">
-              Notes <span className="text-white/50">(optional)</span>
+            <label htmlFor="notes" className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-1">
+              Notes <span className="text-slate-500 dark:text-white/60">(optional)</span>
             </label>
             <textarea
               id="notes"
@@ -177,17 +177,17 @@ export function FamilyHistoryPage() {
       </div>
 
       <div className="glass-card p-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Your recorded conditions</h2>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Your recorded conditions</h2>
         {loading ? (
-          <p className="text-sm text-white/70">Loading…</p>
+          <p className="text-sm text-slate-600 dark:text-white/70">Loading…</p>
         ) : entries.length === 0 ? (
-          <p className="text-sm text-white/70">No family history recorded yet. Add one above.</p>
+          <p className="text-sm text-slate-600 dark:text-white/70">No family history recorded yet. Add one above.</p>
         ) : (
           <ul className="space-y-2">
             {entries.map((entry) => (
               <li
                 key={entry.id}
-                className="flex items-start justify-between gap-4 p-3 rounded-lg border border-white/10 bg-white/5 text-white"
+                className="flex items-start justify-between gap-4 p-3 rounded-lg border border-slate-100 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white"
               >
                 <div className="min-w-0 flex-1">
                   <span className="font-medium">{entry.condition_name}</span>
@@ -195,9 +195,9 @@ export function FamilyHistoryPage() {
                   <span className="capitalize">{entry.relationship}</span>
                   {entry.age_of_onset != null && ` (onset ${entry.age_of_onset})`}
                   {' — '}
-                  <span className="text-white/70 capitalize">{entry.confidence_level.replace(' ', ' · ')}</span>
+                  <span className="text-slate-600 dark:text-white/70 capitalize">{entry.confidence_level.replace(' ', ' · ')}</span>
                   {entry.notes && (
-                    <p className="mt-1 text-xs text-white/60 line-clamp-2">{entry.notes}</p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-white/60 line-clamp-2">{entry.notes}</p>
                   )}
                 </div>
                 <button

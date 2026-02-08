@@ -9,14 +9,14 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-white dark:bg-black">
       {/* Background: soft gradient + subtle grid */}
       <div
         className="absolute inset-0 opacity-[0.07]"
         style={{
           backgroundImage: `
-            linear-gradient(to right, #FFFFFF 1px, transparent 1px),
-            linear-gradient(to bottom, #FFFFFF 1px, transparent 1px)
+            linear-gradient(to right, #94a3b8 1px, transparent 1px),
+            linear-gradient(to bottom, #94a3b8 1px, transparent 1px)
           `,
           backgroundSize: '48px 48px',
         }}
@@ -26,10 +26,10 @@ export function LoginPage() {
       <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-accent/20 blur-3xl" />
 
       <div className="relative z-10 text-center px-6 max-w-md">
-        <h1 className="text-5xl sm:text-6xl font-bold tracking-tight text-white mb-3">
+        <h1 className="text-5xl sm:text-6xl font-bold tracking-tight text-slate-900 dark:text-white mb-3">
           Soma
         </h1>
-        <p className="text-white/70 text-lg mb-10 leading-relaxed">
+        <p className="text-slate-600 dark:text-white/70 text-lg mb-10 leading-relaxed">
           Your body. Your symptoms. One place to track and understand.
         </p>
         <button

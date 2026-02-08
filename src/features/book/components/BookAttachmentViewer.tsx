@@ -1,5 +1,4 @@
 import type { AttachmentEntry } from '../../../types'
-import { attachmentService } from '../../../services/attachmentService'
 
 interface BookAttachmentViewerProps {
   attachment: AttachmentEntry
@@ -22,7 +21,6 @@ function getPlaceholderIcon(type: string) {
 export function BookAttachmentViewer({ attachment, onClose }: BookAttachmentViewerProps) {
   const isImage = attachment.type === 'image'
   const icon = getPlaceholderIcon(attachment.type)
-  const url = attachmentService.getAttachmentUrl(attachment)
 
   return (
     <div className="book-attachment-viewer bg-white border border-black/10 rounded p-4">
@@ -40,9 +38,9 @@ export function BookAttachmentViewer({ attachment, onClose }: BookAttachmentView
           </button>
         )}
       </div>
-      {isImage ? (
+      {isImage && attachment.storage_path ? (
         <img
-          src={url}
+          src={attachment.storage_path}
           alt={attachment.file_name || 'Attachment'}
           className="max-w-full max-h-64 object-contain rounded border border-black/10"
         />
@@ -50,14 +48,16 @@ export function BookAttachmentViewer({ attachment, onClose }: BookAttachmentView
         <div className="flex flex-col items-center justify-center py-8 text-black/70 border border-dashed border-black/20 rounded">
           <span className="text-4xl mb-2">{icon}</span>
           <p className="text-sm">{attachment.type}</p>
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-accent underline mt-2"
-          >
-            Open file
-          </a>
+          {attachment.storage_path && (
+            <a
+              href={attachment.storage_path}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-accent underline mt-2"
+            >
+              Open file
+            </a>
+          )}
         </div>
       )}
     </div>

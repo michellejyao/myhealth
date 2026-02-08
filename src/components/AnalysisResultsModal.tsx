@@ -13,19 +13,25 @@ export const AnalysisResultsModal: React.FC<AnalysisResultsModalProps> = ({
 }) => {
   if (!open || !result) return null
 
-  const { risk_score, summary, flags = [], insights = [] } = result
+  const { risk_score, summary, flags = [], insights = [], ai_warning } = result
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-3xl w-full relative overflow-y-auto" style={{ maxHeight: '90vh' }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60">
+      <div className="bg-white dark:bg-slate-900 rounded-lg shadow-lg p-8 max-w-3xl w-full relative overflow-y-auto" style={{ maxHeight: '90vh' }}>
         <button
-          className="absolute top-2 right-2 text-slate-500 hover:text-slate-700 text-xl"
+          className="absolute top-2 right-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 text-xl"
           onClick={onClose}
         >
           ×
         </button>
 
-        <h2 className="text-2xl font-bold mb-6">Pattern Analysis Result</h2>
+        <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">Pattern Analysis Result</h2>
+
+        {ai_warning && (
+          <div className="mb-4 p-3 bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-600 rounded text-amber-800 dark:text-amber-300 text-sm">
+            <strong>AI Notice:</strong> {ai_warning}. Showing deterministic analysis only.
+          </div>
+        )}
 
         <div className="flex gap-6 mb-8 items-center">
           {/* Risk Score Circle - vertically centered */}
@@ -40,10 +46,10 @@ export const AnalysisResultsModal: React.FC<AnalysisResultsModalProps> = ({
 
           {/* Summary */}
           <div className="flex-1 flex flex-col justify-center">
-            <h3 className="font-semibold text-slate-800 mb-2 text-lg">
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-lg">
               Summary
             </h3>
-            <p className="bg-slate-100 rounded p-4 text-base">
+            <p className="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded p-4 text-base">
               {summary ?? 'No summary available.'}
             </p>
           </div>
@@ -52,16 +58,16 @@ export const AnalysisResultsModal: React.FC<AnalysisResultsModalProps> = ({
         {/* Flags */}
         {flags.length > 0 && (
           <div className="mb-6">
-            <h3 className="font-semibold text-slate-800 mb-2 text-lg">
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-lg">
               Flags
             </h3>
             <ul className="space-y-3">
               {flags.map((flag: any, idx: number) => (
                 <li
                   key={idx}
-                  className="bg-yellow-100 rounded p-3 text-sm flex items-start gap-3"
+                  className="bg-yellow-100 dark:bg-yellow-900/30 rounded p-3 text-sm flex items-start gap-3"
                 >
-                  <span className="text-yellow-600 mt-1">
+                  <span className="text-yellow-600 dark:text-yellow-400 mt-1">
                     <svg
                       width="24"
                       height="24"
@@ -77,13 +83,13 @@ export const AnalysisResultsModal: React.FC<AnalysisResultsModalProps> = ({
                     </svg>
                   </span>
                   <div>
-                    <div className="font-bold text-yellow-800">
+                    <div className="font-bold text-yellow-800 dark:text-yellow-300">
                       {flag.title}
                     </div>
-                    <div className="text-yellow-700">
+                    <div className="text-yellow-700 dark:text-yellow-400">
                       {flag.reasoning_summary}
                     </div>
-                    <div className="mt-1 text-yellow-900">
+                    <div className="mt-1 text-yellow-900 dark:text-yellow-300">
                       Severity: {flag.severity}
                     </div>
                   </div>
@@ -96,16 +102,16 @@ export const AnalysisResultsModal: React.FC<AnalysisResultsModalProps> = ({
         {/* Insights */}
         {insights.length > 0 && (
           <div className="mb-6">
-            <h3 className="font-semibold text-slate-800 mb-2 text-lg">
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-lg">
               Insights
             </h3>
             <ul className="space-y-3">
               {insights.map((insight: string, idx: number) => (
                 <li
                   key={idx}
-                  className="bg-blue-100 rounded p-3 text-sm flex items-center gap-3"
+                  className="bg-blue-100 dark:bg-blue-900/30 rounded p-3 text-sm flex items-center gap-3"
                 >
-                  <span className="text-blue-600">
+                  <span className="text-blue-600 dark:text-blue-400">
                     <svg
                       width="24"
                       height="24"
@@ -128,7 +134,7 @@ export const AnalysisResultsModal: React.FC<AnalysisResultsModalProps> = ({
                       />
                     </svg>
                   </span>
-                  <span className="text-blue-800">{insight}</span>
+                  <span className="text-blue-800 dark:text-blue-300">{insight}</span>
                 </li>
               ))}
             </ul>
