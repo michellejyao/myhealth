@@ -174,6 +174,14 @@ const BookCover = ({ isOpen, projectName, authorName, pagesClosed = true, scale 
     (frontCoverRef.current.rotation as THREE.Euler).y = currentRotation.current;
   });
 
+  // Decorative corner elements
+  const cornerColor = '#FFD700';
+  const cornerRadius = 0.08 * scale;
+  const cornerZ = 0.32 * scale;
+  // Embossed pattern (subtle)
+  const patternColor = '#fff6e6';
+  // Glowing accent line
+  const accentColor = '#00FFC6';
   return (
     <group>
       {/* Back Cover */}
@@ -192,25 +200,75 @@ const BookCover = ({ isOpen, projectName, authorName, pagesClosed = true, scale 
           <RoundedBox args={[3 * scale, 4 * scale, 0.15 * scale]} radius={0.02 * scale} position={[0, 0, 0.2 * scale]} castShadow receiveShadow>
             <meshStandardMaterial color={leatherColor} roughness={0.7} metalness={0.1} />
           </RoundedBox>
+          {/* Decorative corners */}
+          <mesh position={[-1.4 * scale, 1.9 * scale, cornerZ]}>
+            <circleGeometry args={[cornerRadius, 32]} />
+            <meshStandardMaterial color={cornerColor} emissive={cornerColor} emissiveIntensity={0.5} />
+          </mesh>
+          <mesh position={[1.4 * scale, 1.9 * scale, cornerZ]}>
+            <circleGeometry args={[cornerRadius, 32]} />
+            <meshStandardMaterial color={cornerColor} emissive={cornerColor} emissiveIntensity={0.5} />
+          </mesh>
+          <mesh position={[-1.4 * scale, -1.9 * scale, cornerZ]}>
+            <circleGeometry args={[cornerRadius, 32]} />
+            <meshStandardMaterial color={cornerColor} emissive={cornerColor} emissiveIntensity={0.5} />
+          </mesh>
+          <mesh position={[1.4 * scale, -1.9 * scale, cornerZ]}>
+            <circleGeometry args={[cornerRadius, 32]} />
+            <meshStandardMaterial color={cornerColor} emissive={cornerColor} emissiveIntensity={0.5} />
+          </mesh>
+          {/* Embossed pattern */}
+          <mesh position={[0, 0, 0.31 * scale]}>
+            <planeGeometry args={[2.7 * scale, 3.7 * scale]} />
+            <meshStandardMaterial color={patternColor} transparent opacity={0.08} />
+          </mesh>
+          {/* Glowing accent line */}
+          <mesh position={[0, 1.6 * scale, 0.32 * scale]}>
+            <boxGeometry args={[2.2 * scale, 0.04 * scale, 0.01 * scale]} />
+            <meshStandardMaterial color={accentColor} emissive={accentColor} emissiveIntensity={0.8} transparent opacity={0.7} />
+          </mesh>
+          {/* Title - ensure visible and above accent */}
           <Text
-            position={[0, 0.3 * scale, 0.29 * scale]}
-            fontSize={0.28 * scale}
-            color="#FFFFFF"
+            position={[0, 1.25 * scale, 0.33 * scale]}
+            fontSize={0.36 * scale}
+            color="#fdf0d5"
             anchorX="center"
             anchorY="middle"
             maxWidth={2.5 * scale}
             textAlign="center"
+            fontWeight="bold"
+            // outlineWidth={0.03 * scale}
+            outlineColor="#222"
           >
             {projectName}
           </Text>
           <Text
-            position={[0, -0.3 * scale, 0.29 * scale]}
+            position={[0, 0.65 * scale, 0.32 * scale]}
+            fontSize={0.18 * scale}
+            color="#EEC97F"
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={2.3 * scale}
+            textAlign="center"
+            fontStyle="italic"
+            outlineColor="#222"
+            fontWeight="bold"
+            strokeColor="#000"
+            strokeWidth={0.002 * scale}
+          >
+            {`Your body. Your story. One place to track and understand.`}
+          </Text>
+          {/* User's name */}
+          <Text
+            position={[0, -0.7 * scale, 0.29 * scale]}
             fontSize={0.14 * scale}
-            color="#FFFFFF"
+            color="#f0f0f0"
             anchorX="center"
             anchorY="middle"
             maxWidth={2 * scale}
             textAlign="center"
+            fontStyle="normal"
+            outlineColor="#222"
           >
             {authorName}
           </Text>
@@ -401,8 +459,6 @@ const BookModel = ({
           camera.layers.enable(1); // 👈 still visible
         }}
       >
-
-        <color attach="background" args={['#000000']} />
         <ambientLight intensity={0.4} />
         <directionalLight position={[5, 5, 5]} intensity={1} castShadow shadow-mapSize={[2048, 2048]} />
         <pointLight position={[-5, 3, -5]} intensity={0.5} color="#FFFFFF" />
