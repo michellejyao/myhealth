@@ -392,7 +392,7 @@ const Book3D = ({
       )}
 
       {/* Bookmarks on the right side of the book, flush with no gap */}
-      <group position={[1.5 * scale, 0, 0.25 * scale]}>
+      <group position={[1.48 * scale, 0, 0.25 * scale]}>
         {bookmarks.map((bm, i) => (
           <Bookmark3D
             key={i}
