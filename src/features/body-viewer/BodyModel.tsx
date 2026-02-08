@@ -38,10 +38,32 @@ const PROXY_REGIONS: Array<{
   { id: "right_foot", position: [2, -10, -0.01], radius: 0.08, type: "sphere" },
 ];
 
+const NORMALIZED_CENTERS: Record<BodyRegionId, Vector3> = {
+  head: new Vector3(0.5, 1.1, 0.5),
+  neck: new Vector3(0.5, 0.75, 0.5),
+  chest: new Vector3(0.5, 0.8, 0.5),
+  back: new Vector3(0.5, 0.75, 0),
+  abdomen: new Vector3(0.5, 0.6, 0.5),
+  pelvis: new Vector3(0.5, 0.5, 0.5),
+  left_shoulder: new Vector3(0.25, 0.65, 0.5),
+  left_upper_arm: new Vector3(0.22, 0.58, 0.5),
+  left_forearm: new Vector3(0.2, 0.5, 0.5),
+  left_hand: new Vector3(0.18, 0.45, 0.5),
+  right_shoulder: new Vector3(0.75, 0.65, 0.5),
+  right_upper_arm: new Vector3(0.78, 0.58, 0.5),
+  right_forearm: new Vector3(0.8, 0.5, 0.5),
+  right_hand: new Vector3(0.82, 0.45, 0.5),
+  left_upper_leg: new Vector3(0.45, 0.28, 0.5),
+  left_lower_leg: new Vector3(0.45, 0.16, 0.5),
+  left_foot: new Vector3(0.45, 0.05, 0.5),
+  right_upper_leg: new Vector3(0.55, 0.28, 0.5),
+  right_lower_leg: new Vector3(0.75, 0.5, 0.2),
+  right_foot: new Vector3(0.55, 0.05, 0.5),
+};
+
 interface BodyModelProps {
   onSelectRegion: (region: BodyRegionId) => void;
   highlightedRegion?: BodyRegionId | null;
-  clickableRegions?: ReadonlySet<BodyRegionId>;
   yOffset?: number;           // world units
   rotation?: [number, number, number];
 
@@ -66,7 +88,6 @@ export function BodyModel({
   heatmapRegionColors,
   highlightedHeatmapRegion,
   lowIntensityBlend = 0,
-  clickableRegions,
 }: BodyModelProps) {
   const groupRef = useRef<Group>(null);
   const [hovered, setHovered] = useState(false);
@@ -78,7 +99,6 @@ export function BodyModel({
   const { scene } = useGLTF(MODEL_PATH) as { scene: Group };
 
   const regionSet = useMemo(() => new Set(BODY_REGIONS), []);
-  const clickableSet = clickableRegions ?? regionSet;
   const maxHeatmapCount = useMemo(() => {
     if (!heatmapRegionCounts) return 0;
     let max = 0;
@@ -178,34 +198,12 @@ export function BodyModel({
     modelBox.getSize(boxSize);
 
     const heatCenters: Array<{ pos: Vector3; weight: number; radius?: number; color: Color }> = [];
-    const normalizedCenters: Partial<Record<BodyRegionId, Vector3>> = {
-      head: new Vector3(0.5, 1.1, 0.5),
-      neck: new Vector3(0.5, 1, 0.9),
-      chest: new Vector3(0.5, 0.8, 0.5),
-      back: new Vector3(0.5, 0.75, 0),
-      abdomen: new Vector3(0.5, 0.6, 0.5),
-      pelvis: new Vector3(0.5, 0.5, 0.5),
-      left_shoulder: new Vector3(0.25, 0.85, 0.5),
-      left_upper_arm: new Vector3(0.18, 0.78, 0.4),
-      left_forearm: new Vector3(0.2, 0.5, 0.5),
-      left_hand: new Vector3(0.18, 0.45, 0.5),
-      right_shoulder: new Vector3(0.75, 0.85, 0.5),
-      right_upper_arm: new Vector3(0.8, 0.8, 0.4),
-      right_forearm: new Vector3(0.8, 0.5, 0.5),
-      right_hand: new Vector3(0.82, 0.45, 0.5),
-      left_upper_leg: new Vector3(0.40, 0.28, 0.5),
-      left_lower_leg: new Vector3(0.45, 0.16, 0.2),
-      left_foot: new Vector3(0.45, 0.05, 0.5),
-      right_upper_leg: new Vector3(0.55, 0.28, 0.5),
-      right_lower_leg: new Vector3(0.75, 0.16, 0.2),
-      right_foot: new Vector3(0.55, 0.05, 0.5),
-    };
 
     if (heatmapRegionCounts) {
       const denom = maxHeatmapCount > 0 ? maxHeatmapCount : 1;
       for (const [region, count] of Object.entries(heatmapRegionCounts)) {
         if (!count) continue;
-        const pos = normalizedCenters[region as BodyRegionId];
+        const pos = NORMALIZED_CENTERS[region as BodyRegionId];
         if (pos) {
           const colorHex = heatmapRegionColors?.[region as BodyRegionId] ?? "#ef4444";
           heatCenters.push({
@@ -233,7 +231,7 @@ export function BodyModel({
       }
     }
     if (highlightedHeatmapRegion) {
-      const pos = normalizedCenters[highlightedHeatmapRegion];
+      const pos = NORMALIZED_CENTERS[highlightedHeatmapRegion];
       if (pos) {
         const colorHex = heatmapRegionColors?.[highlightedHeatmapRegion] ?? "#ef4444";
         heatCenters.push({
@@ -293,7 +291,7 @@ export function BodyModel({
   const onPointerDown = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
     const region = (e.object as Mesh).userData?.region as BodyRegionId | undefined;
-    if (region && regionSet.has(region) && clickableSet.has(region)) {
+    if (region && regionSet.has(region)) {
       // Store the pointer down position and region
       pointerDownRef.current = { region, x: e.clientX, y: e.clientY };
     }
@@ -308,8 +306,7 @@ export function BodyModel({
       region &&
       pointerDownRef.current &&
       pointerDownRef.current.region === region &&
-      regionSet.has(region) &&
-      clickableSet.has(region)
+      regionSet.has(region)
     ) {
       // Check if pointer moved less than 5 pixels (prevents drag/accidental clicks)
       const deltaX = Math.abs(e.clientX - pointerDownRef.current.x);
@@ -322,6 +319,17 @@ export function BodyModel({
     
     // Clear the pointer down reference
     pointerDownRef.current = null;
+  };
+
+  const onPointerOver = (e: ThreeEvent<PointerEvent>) => {
+    const region = (e.object as Mesh).userData?.region as BodyRegionId | undefined;
+    if (region && regionSet.has(region)) {
+      setHovered(true);
+    }
+  };
+
+  const onPointerOut = () => {
+    setHovered(false);
   };
 
   const { centeredPosition, uniformScale } = useMemo(() => {
@@ -339,6 +347,7 @@ export function BodyModel({
       uniformScale: scale,
     };
   }, [displayScene, yOffset]);
+
 
   const appliedRotation = rotation ?? ([0, 0, Math.PI / 2] as [number, number, number]);
 
@@ -360,8 +369,8 @@ export function BodyModel({
                   renderOrder={1}
                   onPointerDown={onPointerDown}
                   onPointerUp={onPointerUp}
-                  onPointerOver={() => setHovered(true)}
-                  onPointerOut={() => setHovered(false)}
+                  onPointerOver={onPointerOver}
+                  onPointerOut={onPointerOut}
                 >
                   {type === "sphere" ? (
                     <sphereGeometry args={[scaledRadius, 12, 12]} />
