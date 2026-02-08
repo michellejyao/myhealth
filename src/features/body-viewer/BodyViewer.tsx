@@ -1,6 +1,6 @@
 import { Suspense, useMemo, useState, useRef, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Html } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import { BodyModel } from './BodyModel'
 import { useAppStore } from '../../store'
 import { useHealthLogs } from '../../hooks/useHealthLogs'
@@ -49,23 +49,6 @@ export function BodyViewer() {
       isActive = false
     }
   }, [user?.sub])
-
-  const mapDetailedToBroad = (region: string): BodyRegionId9 | null => {
-    if (region === 'head') return 'head'
-    if (region === 'neck') return 'neck'
-    if (region === 'chest') return 'chest'
-    if (region === 'back') return 'back'
-    if (region === 'abdomen') return 'abdomen'
-    if (region.startsWith('left_')) {
-      if (region.includes('leg') || region.includes('foot')) return 'left_leg'
-      return 'left_arm'
-    }
-    if (region.startsWith('right_')) {
-      if (region.includes('leg') || region.includes('foot')) return 'right_leg'
-      return 'right_arm'
-    }
-    return null
-  }
 
   const normalizeRegionId = (value: string): string => {
     return value
@@ -318,7 +301,7 @@ export function BodyViewer() {
           <select
             value={selectedBodyRegion ?? ''}
             onChange={(e) =>
-              setSelectedBodyRegion(e.target.value ? (e.target.value as BodyRegionId20) : undefined)
+              setSelectedBodyRegion(e.target.value ? (e.target.value as BodyRegionId20) : null)
             }
             className="w-full rounded-lg border border-white/20 bg-white/5 px-2 py-1 text-sm text-white/90 mb-3"
           >

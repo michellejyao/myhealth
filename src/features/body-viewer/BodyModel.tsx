@@ -1,6 +1,6 @@
 import { useRef, useMemo, useState } from "react";
 import type { ThreeEvent } from "@react-three/fiber";
-import { type Group, Mesh, Box3, Vector3, Color, BufferAttribute, MathUtils } from "three";
+import { type Group, Mesh, MeshStandardMaterial, Box3, Vector3, Color, BufferAttribute, MathUtils } from "three";
 import { useGLTF, useCursor } from "@react-three/drei";
 import type { BodyRegionId } from "../../types";
 import { BODY_REGIONS, type BodyRegionId as BodyRegion } from "../../types";

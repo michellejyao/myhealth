@@ -1,0 +1,15 @@
+# Medical Image Analysis API - MONAI + PyTorch
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.6
+httpx>=0.26.0
+Pillow>=10.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# MONAI and PyTorch (CPU or CUDA)
+torch>=2.0.0
+monai>=1.4.0
+
+# Optional: use .env
+python-dotenv>=1.0.0

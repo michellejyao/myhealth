@@ -13,7 +13,7 @@ export const AnalysisResultsModal: React.FC<AnalysisResultsModalProps> = ({
 }) => {
   if (!open || !result) return null
 
-  const { risk_score, summary, flags = [], insights = [] } = result
+  const { risk_score, summary, flags = [], insights = [], ai_warning } = result
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60">
@@ -26,6 +26,12 @@ export const AnalysisResultsModal: React.FC<AnalysisResultsModalProps> = ({
         </button>
 
         <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">Pattern Analysis Result</h2>
+
+        {ai_warning && (
+          <div className="mb-4 p-3 bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-600 rounded text-amber-800 dark:text-amber-300 text-sm">
+            <strong>AI Notice:</strong> {ai_warning}. Showing deterministic analysis only.
+          </div>
+        )}
 
         <div className="flex gap-6 mb-8 items-center">
           {/* Risk Score Circle - vertically centered */}

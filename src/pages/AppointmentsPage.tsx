@@ -4,6 +4,7 @@ import { appointmentService } from '../services/appointmentService'
 import type { AppointmentEntry, Specialty } from '../types'
 import { PageContainer } from '../components/PageContainer'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { AppointmentSummary } from '../components/AppointmentSummary'
 
 const SPECIALTY_LABELS: Record<Specialty, string> = {
   'general practitioner': 'General Practitioner',
@@ -76,6 +77,13 @@ export function AppointmentsPage() {
         View your upcoming appointments and add questions to ask your doctor.
       </p>
 
+      {/* Appointment Summary Section */}
+      <div className="mb-8">
+        <AppointmentSummary />
+      </div>
+
+      {/* Upcoming Appointments */}
+      <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Upcoming Appointments</h2>
       {futureAppointments.length === 0 ? (
         <div className="glass-card p-8 text-center text-slate-600 dark:text-white/70">
           No upcoming appointments. Add appointments in the My Health Book → Appointments section.

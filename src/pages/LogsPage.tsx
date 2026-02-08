@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
 import { AnalysisResultsModal } from '../components/AnalysisResultsModal'
-import { createClient } from '@supabase/supabase-js'
 import { useAuth0 } from '@auth0/auth0-react'
 import { Link } from 'react-router-dom'
 import { useHealthLogs } from '../hooks/useHealthLogs'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { PageContainer } from '../components/PageContainer'
+import { analysisService } from '../services/analysisService'
+import { supabase } from '../lib/supabase'
 
 export function LogsPage() {
   const { user, isAuthenticated } = useAuth0()
@@ -29,32 +30,11 @@ export function LogsPage() {
       if (!isAuthenticated || !user?.sub) {
         throw new Error('You must be logged in to run analysis.')
       }
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-      const fnUrl = `${supabaseUrl}/functions/v1/pattern-analysis`
-      const res = await fetch(fnUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${supabaseKey}`,
-        },
-        body: JSON.stringify({ user_id: user.sub }),
-      })
-      const text = await res.text()
-      let data
-      try {
-        data = JSON.parse(text)
-      } catch {
-        throw new Error(`Non-JSON response: ${text}`)
-      }
-      if (!res.ok) {
-        throw new Error(data.error || `HTTP ${res.status}: ${text}`)
-      }
+      const data = await analysisService.analyzeLogs(user.sub)
       setAnalysisResult(data)
       setModalOpen(true)
 
       // Store result in analysis_results table
-      const supabase = createClient(supabaseUrl, supabaseKey)
       await supabase.from('analysis_results').insert([
         {
           user_id: user.sub,

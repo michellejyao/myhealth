@@ -8,8 +8,7 @@ const nav = [
   { to: '/appointments', label: 'Appointments' },
   { to: '/family-history', label: 'Family History' },
   { to: '/health-profile', label: 'Health Profile' },
-  { to: '/profile', label: 'Profile' },
-  { to: '/analysis-results', label: 'Analysis Results' },
+  { to: '/profile', label: 'Profile' }
 ]
 
 // Sun icon for light mode

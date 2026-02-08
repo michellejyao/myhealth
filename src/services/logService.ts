@@ -103,6 +103,22 @@ export const logService = {
     return data ?? []
   },
 
+  /** Fetch logs within a date range for summary generation. */
+  async fetchLogsInDateRange(userId: string, startDate: string, endDate: string) {
+    if (!userId) throw new Error('userId is required')
+    // Make end date inclusive by adding time to the end of day
+    const endDateInclusive = endDate + 'T23:59:59.999Z'
+    const { data, error } = await supabase
+      .from('health_logs')
+      .select('*')
+      .eq('user_id', userId)
+      .gte('date', startDate)
+      .lte('date', endDateInclusive)
+      .order('date', { ascending: false })
+    if (error) throw new Error(`Failed to fetch logs: ${error.message}`)
+    return data ?? []
+  },
+
   // Get all logs for a user
   async getUserLogs(userId: string) {
     if (!userId) {

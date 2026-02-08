@@ -51,9 +51,9 @@ export const Bookmark3D = ({
       </mesh>
       {/* Label higher on bookmark */}
       <Text
-        position={[0, 0.25 * bookmarkHeight, 0.031 * scale]}
+        position={[0, 0.15 * bookmarkHeight, 0.031 * scale]}
         fontSize={0.06 * scale}
-        color="#000000"
+        color="#222"
         anchorX="center"
         anchorY="middle"
         maxWidth={0.5 * scale}

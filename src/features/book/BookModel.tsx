@@ -122,11 +122,12 @@ export const EndPage = ({
           transform
           occlude={false}
           distanceFactor={scale * 5}
-          position={[1.4 * scale, -0.22 * scale, pageThickness + 0.001]}
+          // Shift right to make left margin larger, and down to make bottom margin larger
+          position={[(1.45) * scale, -0.05 * scale, pageThickness + 0.001]}
           style={{
-            width: `${pageWidth * 100}px`,
-            height: `${pageHeight * 100}px`,
-            padding: '14px',
+            width: `${(pageWidth * 100) - 25}px`, // reduce width from left
+            height: `${(pageHeight * 100) - 40}px`, // reduce height from bottom
+            padding: '12px',
             boxSizing: 'border-box',
             overflow: 'hidden',
             // pointerEvents removed to avoid raycast bug
@@ -174,6 +175,14 @@ const BookCover = ({ isOpen, projectName, authorName, pagesClosed = true, scale 
     (frontCoverRef.current.rotation as THREE.Euler).y = currentRotation.current;
   });
 
+  // Decorative corner elements
+  const cornerColor = '#FFD700';
+  const cornerRadius = 0.08 * scale;
+  const cornerZ = 0.32 * scale;
+  // Embossed pattern (subtle)
+  const patternColor = '#fff6e6';
+  // Glowing accent line
+  const accentColor = '#00FFC6';
   return (
     <group>
       {/* Back Cover */}
@@ -192,25 +201,75 @@ const BookCover = ({ isOpen, projectName, authorName, pagesClosed = true, scale 
           <RoundedBox args={[3 * scale, 4 * scale, 0.15 * scale]} radius={0.02 * scale} position={[0, 0, 0.2 * scale]} castShadow receiveShadow>
             <meshStandardMaterial color={leatherColor} roughness={0.7} metalness={0.1} />
           </RoundedBox>
+          {/* Decorative corners */}
+          <mesh position={[-1.4 * scale, 1.9 * scale, cornerZ]}>
+            <circleGeometry args={[cornerRadius, 32]} />
+            <meshStandardMaterial color={cornerColor} emissive={cornerColor} emissiveIntensity={0.5} />
+          </mesh>
+          <mesh position={[1.4 * scale, 1.9 * scale, cornerZ]}>
+            <circleGeometry args={[cornerRadius, 32]} />
+            <meshStandardMaterial color={cornerColor} emissive={cornerColor} emissiveIntensity={0.5} />
+          </mesh>
+          <mesh position={[-1.4 * scale, -1.9 * scale, cornerZ]}>
+            <circleGeometry args={[cornerRadius, 32]} />
+            <meshStandardMaterial color={cornerColor} emissive={cornerColor} emissiveIntensity={0.5} />
+          </mesh>
+          <mesh position={[1.4 * scale, -1.9 * scale, cornerZ]}>
+            <circleGeometry args={[cornerRadius, 32]} />
+            <meshStandardMaterial color={cornerColor} emissive={cornerColor} emissiveIntensity={0.5} />
+          </mesh>
+          {/* Embossed pattern */}
+          <mesh position={[0, 0, 0.31 * scale]}>
+            <planeGeometry args={[2.7 * scale, 3.7 * scale]} />
+            <meshStandardMaterial color={patternColor} transparent opacity={0.08} />
+          </mesh>
+          {/* Glowing accent line */}
+          <mesh position={[0, 1.6 * scale, 0.32 * scale]}>
+            <boxGeometry args={[2.2 * scale, 0.04 * scale, 0.01 * scale]} />
+            <meshStandardMaterial color={accentColor} emissive={accentColor} emissiveIntensity={0.8} transparent opacity={0.7} />
+          </mesh>
+          {/* Title - ensure visible and above accent */}
           <Text
-            position={[0, 0.3 * scale, 0.29 * scale]}
-            fontSize={0.28 * scale}
-            color="#FFFFFF"
+            position={[0, 1.25 * scale, 0.33 * scale]}
+            fontSize={0.36 * scale}
+            color="#fdf0d5"
             anchorX="center"
             anchorY="middle"
             maxWidth={2.5 * scale}
             textAlign="center"
+            fontWeight="bold"
+            // outlineWidth={0.03 * scale}
+            outlineColor="#222"
           >
             {projectName}
           </Text>
           <Text
-            position={[0, -0.3 * scale, 0.29 * scale]}
+            position={[0, 0.65 * scale, 0.32 * scale]}
+            fontSize={0.18 * scale}
+            color="#EEC97F"
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={2.3 * scale}
+            textAlign="center"
+            fontStyle="italic"
+            outlineColor="#222"
+            fontWeight="bold"
+            strokeColor="#000"
+            strokeWidth={0.002 * scale}
+          >
+            {`Your body. Your story. One place to track and understand.`}
+          </Text>
+          {/* User's name */}
+          <Text
+            position={[0, -0.7 * scale, 0.29 * scale]}
             fontSize={0.14 * scale}
-            color="#FFFFFF"
+            color="#f0f0f0"
             anchorX="center"
             anchorY="middle"
             maxWidth={2 * scale}
             textAlign="center"
+            fontStyle="normal"
+            outlineColor="#222"
           >
             {authorName}
           </Text>
@@ -268,6 +327,13 @@ const Book3D = ({
     });
   };
 
+  // Helper: is the last page visually fully open?
+  const lastPageOpen = (() => {
+    const last = pageRotations[pageCount - 1];
+    // maxRotation from Page: -Math.PI * 0.85
+    return last !== undefined && Math.abs(last - (-Math.PI * 0.85)) < 0.08;
+  })();
+
   // Page flip animation
   useEffect(() => {
     if (isOpen && currentPage < pageCount) {
@@ -315,7 +381,7 @@ const Book3D = ({
 
       {/* 🔖 BOOKMARKS (ONLY CLICKABLE OBJECTS) */}
       {/* End Page */}
-      {displayComponent && currentPage >= pageCount && (
+      {displayComponent && lastPageOpen && (
         <EndPage
           position={[-1.5 * scale, 0, 0.05 * scale + pageCount * 0.01 * scale]}
           rotation={[0, 0, 0]}
@@ -326,7 +392,7 @@ const Book3D = ({
       )}
 
       {/* Bookmarks on the right side of the book, flush with no gap */}
-      <group position={[1.5 * scale, 0, 0.25 * scale]}>
+      <group position={[1.48 * scale, 0, 0.25 * scale]}>
         {bookmarks.map((bm, i) => (
           <Bookmark3D
             key={i}
@@ -344,7 +410,7 @@ const Book3D = ({
       </group>
 
       {/* End Page duplicate for both sides - use displayComponent */}
-      {displayComponent && currentPage >= pageCount && (
+      {displayComponent && lastPageOpen && (
         <EndPage
           position={[-1.5 * scale, 0, 0.05 * scale + pageCount * 0.01 * scale]}
           rotation={[0, 0, 0]}
@@ -401,8 +467,6 @@ const BookModel = ({
           camera.layers.enable(1); // 👈 still visible
         }}
       >
-
-        <color attach="background" args={['#000000']} />
         <ambientLight intensity={0.4} />
         <directionalLight position={[5, 5, 5]} intensity={1} castShadow shadow-mapSize={[2048, 2048]} />
         <pointLight position={[-5, 3, -5]} intensity={0.5} color="#FFFFFF" />

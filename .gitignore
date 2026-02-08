@@ -30,6 +30,8 @@ lerna-debug.log*
 !.vscode/extensions.json
 .idea
 .DS_Store
+.idea
+.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
@@ -38,3 +40,21 @@ lerna-debug.log*
 
 config.toml
 /supabase/.temp/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+.ENV/
+env.bak/
+venv.bak/
