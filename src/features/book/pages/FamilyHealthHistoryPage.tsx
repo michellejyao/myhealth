@@ -18,23 +18,25 @@ import type { FamilyHistoryEntry } from '../../../types'
 const inputClass =
   'w-full rounded border border-black/20 bg-white px-3 py-2 text-black text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent'
 
+
 interface FamilyHealthHistoryPageProps {
   /** When true, only show recorded conditions (e.g. book bookmark); no add form. */
-  recordedOnly?: boolean
+  recordedOnly?: boolean;
+  userId?: string;
 }
 
-export function FamilyHealthHistoryPage({ recordedOnly = false }: FamilyHealthHistoryPageProps) {
-  const { user } = useAuth0()
-  const userId = user?.sub ?? ''
-  const [entries, setEntries] = useState<FamilyHistoryEntry[]>([])
-  const [loading, setLoading] = useState(true)
-  const [conditionName, setConditionName] = useState('')
-  const [relationship, setRelationship] = useState<FamilyRelationship>('mother')
-  const [ageOfOnset, setAgeOfOnset] = useState<string>('')
-  const [notes, setNotes] = useState('')
-  const [confidenceLevel, setConfidenceLevel] = useState<ConfidenceLevel>('suspected')
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export function FamilyHealthHistoryPage({ recordedOnly = false, userId: propUserId }: FamilyHealthHistoryPageProps) {
+  const { user } = useAuth0();
+  const userId = propUserId ?? user?.sub ?? '';
+  const [entries, setEntries] = useState<FamilyHistoryEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [conditionName, setConditionName] = useState('');
+  const [relationship, setRelationship] = useState<FamilyRelationship>('mother');
+  const [ageOfOnset, setAgeOfOnset] = useState<string>('');
+  const [notes, setNotes] = useState('');
+  const [confidenceLevel, setConfidenceLevel] = useState<ConfidenceLevel>('suspected');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId) return

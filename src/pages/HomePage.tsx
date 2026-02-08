@@ -37,7 +37,7 @@ export function HomePage() {
 
   const userId = user?.sub ?? '';
   const bookmarks = [
-    { label: 'Family history', component: <FamilyHealthHistoryPage recordedOnly /> },
+    { label: 'Family history', component: <FamilyHealthHistoryPage recordedOnly userId={userId} /> },
     { label: 'Appointments', component: <DoctorAppointmentPage /> },
     { label: 'Medical Logs', component: <MedicalLogsPage userId={userId} /> },
   ];
