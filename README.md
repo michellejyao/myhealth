@@ -115,23 +115,3 @@ Beyond these features, we aim to evolve Soma into a comprehensive longitudinal h
 We also plan to integrate multimodal inputs such as voice logs, photos, and medical documents, allowing users to capture their health experiences more naturally. Over time, Soma will function as a continuously learning system that adapts to each user, helping them better understand their body and detect issues earlier.
 Ultimately, our goal is to transform Soma from a symptom tracker into a personalized health intelligence companion — one that helps users visualize, understand, and proactively manage their health over time.
 
-
-
-* Did you implement a generative AI model or API in your hack this weekend?
-
-We implemented a generative AI analysis engine using a large language model API to transform raw symptom logs into structured health insights, anomaly flags, and predictive risk assessments.
-
-When a user logs a symptom, the system sends the structured log data—including symptom location, severity, notes, historical logs, and family health history—to the generative AI model. The model analyzes temporal trends, detects recurring patterns, identifies anomalies relative to the user’s baseline, and generates interpretable summaries and insight flags.
-
-We also combine the generative AI output with deterministic statistical analysis, such as severity trend slopes, anomaly detection using deviation from baseline, and recurrence frequency scoring. This hybrid approach ensures that the insights are both explainable and grounded in measurable patterns, while still benefiting from the model’s ability to detect higher-level semantic relationships and contextual patterns.
-
-Generative AI is essential in translating raw health data into human-readable explanations, highlighting potential inherited risk patterns based on family history, and generating structured summaries that users can share with clinicians.
-
-This allows the system to move beyond simple logging and become an intelligent assistant that helps users understand their health over time.
-
-
-
-If you are submitting to the Best Use of Gemini API prize category, please provide your Gemini Project Number.
-Head over to Gemini AI Studio > Click the 'Get API Key' button > Click the 'Project Number' for your API Key > Copy the 'Project Number' and submit below.
-
-
