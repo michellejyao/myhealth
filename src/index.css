@@ -27,9 +27,21 @@ html.dark body {
   .dark .glass-card {
     @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl shadow-black/5;
   }
-  .dark .glass-input {
-    @apply bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-white/50 focus:border-brand/50 focus:ring-1 focus:ring-brand/30 focus:bg-white/10 transition-colors;
-  }
+.dark .glass-input {
+  @apply bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-white/50 focus:border-brand focus:border-opacity-50 focus:ring-1 focus:ring-brand focus:ring-opacity-30 focus:bg-white/10 transition-colors;
+}
+
+.date-input {
+  color-scheme: light;
+}
+
+.dark .date-input {
+  color-scheme: dark;
+}
+
+.dark .date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
   
   /* Light mode glass styles */
   .glass-card {

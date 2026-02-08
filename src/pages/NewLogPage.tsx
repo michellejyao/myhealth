@@ -25,6 +25,18 @@ export function NewLogPage() {
   const [painScore, setPainScore] = useState<number>(5)
   const [painType, setPainType] = useState<PainType>('aching')
   const [painTypeOther, setPainTypeOther] = useState('')
+
+  const painTypeColor: Record<PainType, string> = {
+    sharp: 'bg-rose-600 text-white',
+    dull: 'bg-orange-500 text-white',
+    throbbing: 'bg-pink-600 text-white',
+    burning: 'bg-red-600 text-white',
+    aching: 'bg-amber-500 text-white',
+    numbness: 'bg-slate-600 text-white',
+    tingling: 'bg-cyan-600 text-white',
+    stiffness: 'bg-yellow-600 text-white',
+    other: 'bg-red-600 text-white',
+  }
   const [notes, setNotes] = useState('')
   const [error, setError] = useState<string | null>(null)
 
@@ -143,7 +155,7 @@ export function NewLogPage() {
                 onClick={() => setPainType(p)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${
                   painType === p
-                    ? 'bg-accent text-white'
+                    ? painTypeColor[p]
                     : 'bg-white dark:bg-white/10 text-slate-700 dark:text-white/80 hover:bg-slate-100 dark:hover:bg-white/15 border border-slate-100 dark:border-white/10'
                 }`}
               >
@@ -155,7 +167,7 @@ export function NewLogPage() {
               onClick={() => setPainType('other')}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 painType === 'other'
-                  ? 'bg-accent text-white'
+                  ? painTypeColor.other
                   : 'bg-white dark:bg-white/10 text-slate-700 dark:text-white/80 hover:bg-slate-100 dark:hover:bg-white/15 border border-slate-100 dark:border-white/10'
               }`}
             >
