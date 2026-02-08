@@ -9,6 +9,7 @@ import {
   DoctorAppointmentPage,
   AIInsightsPage,
   MedicalLogsPage,
+  HealthProfilePage,
 } from '../features/book/pages'
 import { useAppStore } from '../store'
 import { PageContainer } from '../components/PageContainer'
@@ -37,9 +38,10 @@ export function HomePage() {
 
   const userId = user?.sub ?? '';
   const bookmarks = [
-    { label: 'Family history', component: <FamilyHealthHistoryPage recordedOnly userId={userId} /> },
-    { label: 'Appointments', component: <DoctorAppointmentPage /> },
     { label: 'Medical Logs', component: <MedicalLogsPage userId={userId} /> },
+    { label: 'Appointments', component: <DoctorAppointmentPage /> },
+    { label: 'Family history', component: <FamilyHealthHistoryPage recordedOnly userId={userId} /> },
+    { label: 'Health Profile', component: <HealthProfilePage userId={userId} /> },
   ];
 
   return (

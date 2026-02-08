@@ -31,7 +31,7 @@ export function MedicalLogsPage({ userId: propUserId }: MedicalLogsPageProps) {
 
 	return (
 		<BookPageLayout title="Medical Logs">
-			<BookSection title="Your Medical Logs">
+			<BookSection>
 				{loading ? (
 					<p className="text-sm text-black/70">Loading…</p>
 				) : error ? (
