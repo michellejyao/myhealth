@@ -115,3 +115,16 @@ Beyond these features, we aim to evolve Soma into a comprehensive longitudinal h
 We also plan to integrate multimodal inputs such as voice logs, photos, and medical documents, allowing users to capture their health experiences more naturally. Over time, Soma will function as a continuously learning system that adapts to each user, helping them better understand their body and detect issues earlier.
 Ultimately, our goal is to transform Soma from a symptom tracker into a personalized health intelligence companion — one that helps users visualize, understand, and proactively manage their health over time.
 
+## Running the Application
+To run the application:
+
+1. Start the frontend:
+	```bash
+	npm run dev
+	```
+
+2. Activate the backend Python environment:
+	```powershell
+	cd medical-image-api
+	.\.venv\Scripts\Activate.ps1
+	```
